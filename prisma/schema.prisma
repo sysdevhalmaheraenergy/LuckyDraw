@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum EventStatus {
+  DRAFT
+  ONGOING
+  COMPLETED
+}
+
+enum CouponStatus {
+  AVAILABLE
+  WON
+  EXCLUDED
+}
+
+enum PrizeStatus {
+  PENDING
+  DRAWN
+}
+
+enum DrawResultStatus {
+  VALID
+  UNDONE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(ADMIN)
+  events    Event[]
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?
+  totalCoupons Int
+  status       EventStatus @default(DRAFT)
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  coupons      Coupon[]
+  prizes       Prize[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Coupon {
+  id          String       @id @default(cuid())
+  number      Int
+  status      CouponStatus @default(AVAILABLE)
+  event       Event        @relation(fields: [eventId], references: [id])
+  eventId     String
+  drawResults DrawResult[]
+
+  @@unique([eventId, number])
+  @@index([eventId, status])
+}
+
+model Prize {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  drawOrder   Int
+  status      PrizeStatus  @default(PENDING)
+  event       Event        @relation(fields: [eventId], references: [id])
+  eventId     String
+  drawResults DrawResult[]
+}
+
+model DrawResult {
+  id       String           @id @default(cuid())
+  prize    Prize            @relation(fields: [prizeId], references: [id])
+  prizeId  String
+  coupon   Coupon           @relation(fields: [couponId], references: [id])
+  couponId String
+  status   DrawResultStatus @default(VALID)
+  drawnAt  DateTime         @default(now())
+  undoneAt DateTime?
+}

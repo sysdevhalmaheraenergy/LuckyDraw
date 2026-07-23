@@ -1,0 +1,97 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { BrandMark } from "@/components/brand-mark";
+
+const navLinks = [
+  { href: "#fitur", label: "Fitur" },
+  { href: "#cara-kerja", label: "Cara Kerja" },
+  { href: "/api-docs", label: "API Docs" },
+];
+
+export function SiteHeader() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="sticky top-4 z-50 mx-4 sm:mx-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-border bg-surface-alt/80 px-4 py-3 shadow-lg shadow-brand/5 backdrop-blur-md sm:px-6">
+        <Link href="/" aria-label="Lucky Draw beranda">
+          <BrandMark />
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Navigasi utama">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-ink-muted transition-colors duration-200 hover:text-ink"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/login"
+            className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-ink transition-colors duration-200 hover:text-brand"
+          >
+            Masuk
+          </Link>
+          <Link
+            href="/register"
+            className="cursor-pointer rounded-full bg-ink px-5 py-2 text-sm font-semibold text-surface transition-transform duration-200 hover:opacity-90 active:scale-[0.98]"
+          >
+            Daftar
+          </Link>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label={open ? "Tutup menu" : "Buka menu"}
+          className="cursor-pointer rounded-lg p-2 text-ink md:hidden"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+            {open ? (
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            ) : (
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {open && (
+        <div className="mx-auto mt-2 flex max-w-6xl flex-col gap-1 rounded-2xl border border-border bg-surface-alt p-4 shadow-lg md:hidden">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors duration-200 hover:bg-surface hover:text-ink"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+            <Link
+              href="/login"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface"
+            >
+              Masuk
+            </Link>
+            <Link
+              href="/register"
+              className="cursor-pointer rounded-lg bg-ink px-3 py-2.5 text-center text-sm font-semibold text-surface"
+            >
+              Daftar
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
