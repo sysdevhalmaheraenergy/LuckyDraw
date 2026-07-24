@@ -22,25 +22,28 @@ export async function POST(request: NextRequest) {
     const user = await requireAdmin();
     const body = createEventSchema.parse(await request.json());
 
-    const event = await prisma.$transaction(async (tx) => {
-      const created = await tx.event.create({
-        data: {
-          name: body.name,
-          description: body.description,
-          totalCoupons: body.totalCoupons,
-          userId: user.id,
-        },
-      });
-
-      await tx.coupon.createMany({
-        data: Array.from({ length: body.totalCoupons }, (_, i) => ({
-          eventId: created.id,
-          number: i + 1,
-        })),
-      });
-
-      return created;
+    const event = await prisma.event.create({
+      data: {
+        name: body.name,
+        description: body.description,
+        totalCoupons: body.totalCoupons,
+        userId: user.id,
+      },
     });
+
+    try {
+      const batchSize = 100;
+      for (let i = 0; i < body.totalCoupons; i += batchSize) {
+        const batch = Array.from(
+          { length: Math.min(batchSize, body.totalCoupons - i) },
+          (_, j) => ({ eventId: event.id, number: i + j + 1 })
+        );
+        await prisma.coupon.createMany({ data: batch });
+      }
+    } catch (couponError) {
+      await prisma.event.delete({ where: { id: event.id } });
+      throw couponError;
+    }
 
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {

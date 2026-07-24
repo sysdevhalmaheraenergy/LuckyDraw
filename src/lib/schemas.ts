@@ -36,7 +36,7 @@ export const createPrizeSchema = z
   .object({
     name: z.string().min(1).openapi({ example: "Hadiah Utama" }),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
+    imageUrl: z.string().startsWith("data:image/").optional(),
     drawOrder: z.number().int().min(0).openapi({ example: 1 }),
   })
   .openapi("CreatePrizeInput");
@@ -58,11 +58,17 @@ export const updateEventSchema = z
   })
   .openapi("UpdateEventInput");
 
+export const claimCouponSchema = z
+  .object({
+    code: z.string().min(1).openapi({ example: "cm8b3..." }),
+  })
+  .openapi("ClaimCouponInput");
+
 export const updatePrizeSchema = z
   .object({
     name: z.string().min(1).optional(),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
+    imageUrl: z.string().startsWith("data:image/").optional(),
     drawOrder: z.number().int().min(0).optional(),
   })
   .openapi("UpdatePrizeInput");

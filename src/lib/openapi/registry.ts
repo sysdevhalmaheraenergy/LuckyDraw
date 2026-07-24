@@ -18,6 +18,7 @@ import {
   okResponseSchema,
   registerSchema,
   userSchema,
+  claimCouponSchema,
 } from "@/lib/schemas";
 
 export const registry = new OpenAPIRegistry();
@@ -294,6 +295,32 @@ registry.registerPath({
     403: forbidden,
     404: notFound,
     409: { description: "Race condition saat memilih kupon, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/coupons/claim",
+  tags: ["Coupons"],
+  summary: "Klaim kupon dengan kode unik (user yang sedang login menjadi pemilik kupon)",
+  security,
+  request: { body: jsonContent(claimCouponSchema) },
+  responses: {
+    200: { description: "Kupon berhasil diklaim.", ...jsonContent(z.object({ coupon: couponSchema, event: eventSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    404: notFound,
+    409: { description: "Race condition, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/api/events/public",
+  tags: ["Events"],
+  summary: "List event publik (hanya yang berstatus ONGOING atau COMPLETED)",
+  responses: {
+    200: { description: "Daftar event publik.", ...jsonContent(z.object({ events: z.array(eventListItemSchema) })) },
   },
 });
 

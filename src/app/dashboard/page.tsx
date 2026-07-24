@@ -59,12 +59,20 @@ export default async function DashboardPage() {
                   : "Belum ada event. Buat lewat API POST /api/events untuk memulai."}
               </p>
             </div>
-            <Link
-              href="/api-docs"
-              className="cursor-pointer rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90"
-            >
-              Buka API Docs
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/dashboard/events/new"
+                className="cursor-pointer rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90"
+              >
+                + Buat Event
+              </Link>
+              <Link
+                href="/api-docs"
+                className="cursor-pointer rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface-alt"
+              >
+                API Docs
+              </Link>
+            </div>
           </div>
 
           {events.length === 0 ? (
@@ -89,9 +97,10 @@ export default async function DashboardPage() {
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {events.map((event) => (
-                <div
+                <Link
                   key={event.id}
-                  className="rounded-2xl border border-border bg-surface-alt p-5 transition-colors duration-200 hover:border-brand/30"
+                  href={`/dashboard/events/${event.id}`}
+                  className="block rounded-2xl border border-border bg-surface-alt p-5 transition-colors duration-200 hover:border-brand/30"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-display text-base font-semibold text-ink">{event.name}</h3>
@@ -108,7 +117,7 @@ export default async function DashboardPage() {
                     <span>{event._count.coupons} kupon</span>
                     <span>{event._count.prizes} hadiah</span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

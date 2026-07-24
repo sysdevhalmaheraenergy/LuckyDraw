@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin, requireUser } from "@/lib/api-auth";
 import { handleApiError, ApiError } from "@/lib/api-utils";
 import { updatePrizeSchema } from "@/lib/schemas";
+import { unlink } from "node:fs/promises";
+import { join } from "node:path";
 
 type Context = { params: Promise<{ eventId: string; prizeId: string }> };
 
@@ -51,6 +53,15 @@ export async function PATCH(request: NextRequest, ctx: Context) {
       },
     });
 
+    if (existing.imageUrl && body.imageUrl !== existing.imageUrl) {
+      const oldImagePath = join(process.cwd(), "public", existing.imageUrl);
+      try {
+        await unlink(oldImagePath);
+      } catch {
+        // File might not exist
+      }
+    }
+
     return NextResponse.json({ prize });
   } catch (error) {
     return handleApiError(error);
@@ -71,6 +82,15 @@ export async function DELETE(_request: Request, ctx: Context) {
         "Hadiah yang sudah diundi tidak bisa dihapus, undo hasil undiannya dulu.",
         400
       );
+    }
+
+    if (prize.imageUrl) {
+      const imagePath = join(process.cwd(), "public", prize.imageUrl);
+      try {
+        await unlink(imagePath);
+      } catch {
+        // File might not exist, continue with deletion
+      }
     }
 
     await prisma.prize.delete({ where: { id: prizeId } });
