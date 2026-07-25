@@ -328,9 +328,17 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
               border: "3px solid rgba(255,215,0,0.6)",
             }}
           >
-            <div className="text-6xl md:text-7xl mb-2 drop-shadow-lg">
-              {prizeEmoji}
-            </div>
+            {winningPrize.imageUrl ? (
+              <img
+                src={winningPrize.imageUrl}
+                alt={winningPrize.name}
+                className="mb-2 h-24 w-40 rounded-xl object-cover ring-2 ring-white/20"
+              />
+            ) : (
+              <div className="text-6xl md:text-7xl mb-2 drop-shadow-lg">
+                {prizeEmoji}
+              </div>
+            )}
             <div className="text-white font-black text-xl md:text-2xl tracking-wide drop-shadow-lg">
               {winningPrize.name}
             </div>

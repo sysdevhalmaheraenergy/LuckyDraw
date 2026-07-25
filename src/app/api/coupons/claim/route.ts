@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         data: { userId: user.id },
         include: { event: true },
       });
-    });
+    }, { timeout: 30000 });
 
     return NextResponse.json({ coupon: result, event: result.event }, { status: 200 });
   } catch (error) {

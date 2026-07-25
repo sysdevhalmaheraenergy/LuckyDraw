@@ -259,6 +259,13 @@ export default function DrawPage() {
                     {prize.description && (
                       <p className="mb-4 text-sm text-slate-400">{prize.description}</p>
                     )}
+                    {prize.imageUrl && (
+                      <img
+                        src={prize.imageUrl}
+                        alt={prize.name}
+                        className="mb-4 h-32 w-full rounded-xl object-cover ring-1 ring-white/10"
+                      />
+                    )}
                     <motion.button
                       onClick={() => handleDraw(prize.id)}
                       disabled={drawingPrizeId === prize.id}
@@ -308,7 +315,18 @@ export default function DrawPage() {
                           animate="visible"
                           className="border-b border-white/5 last:border-b-0 hover:bg-white/5"
                         >
-                          <td className="px-4 py-3 font-semibold text-white">{prize.name}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              {prize.imageUrl && (
+                                <img
+                                  src={prize.imageUrl}
+                                  alt={prize.name}
+                                  className="h-10 w-10 rounded-lg object-cover"
+                                />
+                              )}
+                              <span className="font-semibold text-white">{prize.name}</span>
+                            </div>
+                          </td>
                           <td className="px-4 py-3 font-display font-bold text-emerald-400">
                             {validResult ? `#${validResult.coupon.number}` : "-"}
                           </td>
