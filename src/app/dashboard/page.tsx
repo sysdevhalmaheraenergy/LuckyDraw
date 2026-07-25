@@ -30,13 +30,16 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="flex flex-1 flex-col">
-      <header className="border-b border-border px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+    <div className="relative flex flex-1 flex-col">
+      {/* Glass background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+
+      <header className="border-b border-border/50 bg-white/30 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/">
             <BrandMark />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-ink">{session.user.name ?? session.user.email}</p>
               <p className="text-xs text-ink-muted">{session.user.role}</p>
@@ -46,7 +49,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <main className="flex-1 px-6 py-10">
+      <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
@@ -62,13 +65,13 @@ export default async function DashboardPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard/events/new"
-                className="cursor-pointer rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90"
+                className="cursor-pointer rounded-full bg-gradient-to-br from-brand to-brand-2 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 hover:scale-[1.02]"
               >
                 + Buat Event
               </Link>
               <Link
                 href="/api-docs"
-                className="cursor-pointer rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface-alt"
+                className="cursor-pointer rounded-full border border-border/50 bg-white/30 px-5 py-2.5 text-sm font-semibold text-ink backdrop-blur-xl transition-all duration-200 hover:border-brand/40 hover:text-brand"
               >
                 API Docs
               </Link>
@@ -76,8 +79,8 @@ export default async function DashboardPage() {
           </div>
 
           {events.length === 0 ? (
-            <div className="mt-10 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-surface-alt px-6 py-16 text-center">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand">
+            <div className="mt-8 sm:mt-10 rounded-2xl border border-dashed border-border/50 bg-white/30 p-6 text-center backdrop-blur-xl sm:p-8">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-brand/10 text-brand">
                 <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
                   <path
                     d="M12 5v14M5 12h14"
@@ -87,20 +90,20 @@ export default async function DashboardPage() {
                   />
                 </svg>
               </div>
-              <h2 className="font-display text-lg font-semibold text-ink">Belum ada event</h2>
-              <p className="max-w-sm text-sm text-ink-muted">
+              <h2 className="mt-3 font-display text-lg font-semibold text-ink">Belum ada event</h2>
+              <p className="mt-1 max-w-sm text-sm text-ink-muted">
                 Event pertamamu bisa dibuat lewat endpoint{" "}
-                <code className="rounded bg-surface px-1.5 py-0.5 text-xs text-brand">POST /api/events</code> di
+                <code className="rounded bg-surface/50 px-1.5 py-0.5 text-xs text-brand">POST /api/events</code> di
                 dokumentasi API.
               </p>
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 sm:mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {events.map((event) => (
                 <Link
                   key={event.id}
                   href={`/dashboard/events/${event.id}`}
-                  className="block rounded-2xl border border-border bg-surface-alt p-5 transition-colors duration-200 hover:border-brand/30"
+                  className="block rounded-2xl border border-border/50 bg-white/30 p-5 backdrop-blur-xl transition-all duration-300 hover:border-brand/30 hover:bg-white/40"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-display text-base font-semibold text-ink">{event.name}</h3>
@@ -113,7 +116,7 @@ export default async function DashboardPage() {
                   {event.description && (
                     <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{event.description}</p>
                   )}
-                  <div className="mt-4 flex items-center gap-4 border-t border-border pt-4 text-xs text-ink-muted">
+                  <div className="mt-4 flex items-center gap-4 border-t border-border/50 pt-4 text-xs text-ink-muted">
                     <span>{event._count.coupons} kupon</span>
                     <span>{event._count.prizes} hadiah</span>
                   </div>

@@ -15,7 +15,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-4 z-50 mx-4 sm:mx-6">
-      <div className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-border bg-surface-alt/80 px-4 py-3 shadow-lg shadow-brand/5 backdrop-blur-md sm:px-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-border/50 bg-white/30 px-4 py-3 shadow-glass backdrop-blur-xl sm:px-6">
         <Link href="/" aria-label="Lucky Draw beranda">
           <BrandMark />
         </Link>
@@ -35,13 +35,13 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/login"
-            className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-ink transition-colors duration-200 hover:text-brand"
+            className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:text-brand"
           >
             Masuk
           </Link>
           <Link
             href="/register"
-            className="cursor-pointer rounded-full bg-ink px-5 py-2 text-sm font-semibold text-surface transition-transform duration-200 hover:opacity-90 active:scale-[0.98]"
+            className="cursor-pointer rounded-full bg-gradient-to-br from-brand to-brand-2 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
           >
             Daftar
           </Link>
@@ -65,27 +65,27 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="mx-auto mt-2 flex max-w-6xl flex-col gap-1 rounded-2xl border border-border bg-surface-alt p-4 shadow-lg md:hidden">
+        <div className="mx-auto mt-2 flex max-w-6xl flex-col gap-1 rounded-2xl border border-border/50 bg-white/30 p-4 shadow-glass backdrop-blur-xl md:hidden">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors duration-200 hover:bg-surface hover:text-ink"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors duration-200 hover:bg-white/30 hover:text-ink"
             >
               {link.label}
             </a>
           ))}
-          <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+          <div className="mt-2 flex flex-col gap-2 border-t border-border/50 pt-3">
             <Link
               href="/login"
-              className="cursor-pointer rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-white/30"
             >
               Masuk
             </Link>
             <Link
               href="/register"
-              className="cursor-pointer rounded-lg bg-ink px-3 py-2.5 text-center text-sm font-semibold text-surface"
+              className="cursor-pointer rounded-lg bg-gradient-to-br from-brand to-brand-2 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
             >
               Daftar
             </Link>

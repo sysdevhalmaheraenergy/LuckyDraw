@@ -71,16 +71,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <Link href="/" className="mb-8">
+    <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-12 sm:py-16">
+      {/* Glass background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+
+      <Link href="/" className="mb-6 sm:mb-8">
         <BrandMark />
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-surface-alt p-8 shadow-xl shadow-brand/5">
+      <div className="w-full max-w-sm rounded-2xl border border-border/50 bg-white/40 p-6 sm:p-8 shadow-glass backdrop-blur-xl">
         <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Buat akun baru</h1>
         <p className="mt-1.5 text-sm text-ink-muted">Mulai kelola event lucky draw kamu sendiri.</p>
 
-        <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="mt-6 sm:mt-7 flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="name" className="text-sm font-medium text-ink">
               Nama
@@ -94,7 +97,7 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Budi Santoso"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
 
@@ -111,7 +114,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="kamu@company.com"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
 
@@ -130,7 +133,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Minimal 8 karakter"
-                className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
               <button
                 type="button"
@@ -171,7 +174,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi password"
-                className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
               <button
                 type="button"
@@ -206,10 +209,10 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setRole(r.value)}
                   aria-pressed={role === r.value}
-                  className={`cursor-pointer rounded-xl border px-3.5 py-2.5 text-left transition-colors duration-200 ${
+                  className={`cursor-pointer rounded-xl border px-3.5 py-2.5 text-left transition-all duration-200 ${
                     role === r.value
                       ? "border-brand bg-brand/10"
-                      : "border-border bg-surface hover:border-brand/30"
+                      : "border-border/50 bg-white/30 hover:border-brand/30"
                   }`}
                 >
                   <span
@@ -224,7 +227,7 @@ export default function RegisterPage() {
           </fieldset>
 
           {error && (
-            <p role="alert" aria-live="polite" className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-500">
+            <p role="alert" aria-live="polite" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {error}
             </p>
           )}
@@ -232,7 +235,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand to-brand-2 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending && (
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">

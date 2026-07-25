@@ -70,22 +70,25 @@ export default function EditPrizePage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
-      <header className="border-b border-border px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+    <div className="relative flex flex-1 flex-col">
+      {/* Glass background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+
+      <header className="border-b border-border/50 bg-white/30 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/">
             <BrandMark />
           </Link>
           <Link
             href={eventId ? `/dashboard/events/${eventId}` : "/dashboard"}
-            className="cursor-pointer rounded-full border border-border px-4 py-2 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface-alt"
+            className="cursor-pointer rounded-full border border-border/50 bg-white/30 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-xl transition-all duration-200 hover:border-brand/40 hover:text-brand"
           >
             Kembali
           </Link>
         </div>
       </header>
 
-      <main className="flex-1 px-6 py-10">
+      <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-lg">
           <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Edit Hadiah
@@ -94,7 +97,7 @@ export default function EditPrizePage() {
             Perbarui detail hadiah yang akan diundi.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-5 sm:space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-ink">
                 Nama Hadiah
@@ -106,7 +109,7 @@ export default function EditPrizePage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Hadiah Utama"
-                className="mt-2 block w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-ink outline-none transition-colors duration-200 placeholder:text-ink-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="mt-2 block w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink outline-none transition-all duration-200 placeholder:text-ink-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
             </div>
 
@@ -120,7 +123,7 @@ export default function EditPrizePage() {
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Deskripsi hadiah..."
-                className="mt-2 block w-full resize-none rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-ink outline-none transition-colors duration-200 placeholder:text-ink-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="mt-2 block w-full resize-none rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink outline-none transition-all duration-200 placeholder:text-ink-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
             </div>
 
@@ -173,7 +176,7 @@ export default function EditPrizePage() {
                 <img
                   src={imageUrl}
                   alt="Preview"
-                  className="mt-2 h-32 w-full rounded-xl object-cover"
+                  className="mt-2 h-32 w-full rounded-xl object-cover ring-1 ring-border/50"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
@@ -192,7 +195,7 @@ export default function EditPrizePage() {
                 onChange={(e) => setDrawOrder(Math.max(0, Number(e.target.value)))}
                 min={0}
                 required
-                className="mt-2 block w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-ink outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="mt-2 block w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
               <p className="mt-1.5 text-xs text-ink-muted">
                 0 = undian pertama, 1 = undian kedua, dst.
@@ -208,7 +211,7 @@ export default function EditPrizePage() {
             <button
               type="submit"
               disabled={loading || uploading || !name.trim() || !eventId}
-              className="w-full cursor-pointer rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="w-full cursor-pointer rounded-xl bg-gradient-to-br from-brand to-brand-2 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
