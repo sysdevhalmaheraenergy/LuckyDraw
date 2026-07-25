@@ -18,6 +18,10 @@ import {
   okResponseSchema,
   registerSchema,
   userSchema,
+  presignUploadSchema,
+  presignUploadResponseSchema,
+  finalizeUploadSchema,
+  finalizeUploadResponseSchema,
 } from "@/lib/schemas";
 
 export const registry = new OpenAPIRegistry();
@@ -175,6 +179,40 @@ registry.registerPath({
     200: { description: "Daftar hadiah.", ...jsonContent(z.object({ prizes: z.array(prizeSchema) })) },
     401: unauthorized,
     404: notFound,
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/uploads/presign",
+  tags: ["Uploads"],
+  summary: "Langkah 1: minta signed URL untuk upload gambar hadiah ke Firebase Storage",
+  description:
+    "Server tidak menerima file secara langsung. Response berisi `uploadUrl` (signed URL, berlaku 5 menit) — upload file lewat PUT langsung ke URL itu dari browser, dengan header Content-Type yang SAMA persis dengan yang dikirim di request ini. Setelah PUT berhasil, panggil POST /api/uploads/finalize dengan `path` yang didapat di sini.",
+  security,
+  request: { body: jsonContent(presignUploadSchema) },
+  responses: {
+    200: { description: "Signed URL untuk upload.", ...jsonContent(presignUploadResponseSchema) },
+    400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/uploads/finalize",
+  tags: ["Uploads"],
+  summary: "Langkah 2: finalisasi upload, jadikan file publik, dapatkan URL permanen",
+  description:
+    "Panggil setelah PUT ke uploadUrl dari /api/uploads/presign selesai. URL hasilnya dipakai sebagai `imageUrl` saat membuat/update hadiah.",
+  security,
+  request: { body: jsonContent(finalizeUploadSchema) },
+  responses: {
+    200: { description: "URL publik gambar.", ...jsonContent(finalizeUploadResponseSchema) },
+    400: { description: "Path tidak valid atau file belum selesai diupload.", ...jsonContent(errorResponseSchema) },
+    401: unauthorized,
+    403: forbidden,
   },
 });
 
