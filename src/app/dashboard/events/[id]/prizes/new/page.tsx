@@ -111,35 +111,62 @@ export default function NewPrizePage() {
                 id="image"
                 type="file"
                 accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
+                 onChange={async (e) => {
+                   const file = e.target.files?.[0];
+                   if (!file) return;
 
-                  setUploading(true);
-                  setError("");
+                   setUploading(true);
+                   setError("");
 
-                  try {
-                    const formData = new FormData();
-                    formData.append("file", file);
+                   try {
+                     // Step 1: Request signed URL from /api/uploads/presign
+                     const presignRes = await fetch("/api/uploads/presign", {
+                       method: "POST",
+                       headers: { "Content-Type": "application/json" },
+                       body: JSON.stringify({
+                         fileName: file.name,
+                         contentType: file.type,
+                       }),
+                     });
 
-                    const res = await fetch("/api/upload/prizes", {
-                      method: "POST",
-                      body: formData,
-                    });
+                     if (!presignRes.ok) {
+                       const data = await presignRes.json();
+                       throw new Error(data.error ?? "Gagal meminta URL unggah.");
+                     }
 
-                    if (!res.ok) {
-                      const data = await res.json();
-                      throw new Error(data.error ?? "Gagal mengunggah gambar.");
-                    }
+                     const { uploadUrl, path } = await presignRes.json();
 
-                    const data = await res.json();
-                    setImageUrl(data.dataUrl);
-                  } catch (err) {
-                    setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
-                  } finally {
-                    setUploading(false);
-                  }
-                }}
+                     // Step 2: Upload file directly to Firebase Storage via PUT
+                     const putRes = await fetch(uploadUrl, {
+                       method: "PUT",
+                       headers: { "Content-Type": file.type },
+                       body: file,
+                     });
+
+                     if (!putRes.ok) {
+                       throw new Error("Gagal mengunggah file ke penyimpanan.");
+                     }
+
+                     // Step 3: Finalize upload to get permanent public URL
+                     const finalizeRes = await fetch("/api/uploads/finalize", {
+                       method: "POST",
+                       headers: { "Content-Type": "application/json" },
+                       body: JSON.stringify({ path }),
+                     });
+
+                     if (!finalizeRes.ok) {
+                       const data = await finalizeRes.json();
+                       throw new Error(data.error ?? "Gagal memfinalisasi gambar.");
+                     }
+
+                     const { url } = await finalizeRes.json();
+                     setImageUrl(url);
+                   } catch (err) {
+                     setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+                   } finally {
+                     setUploading(false);
+                   }
+                 }}
                 className="mt-2 block w-full text-sm text-ink file:mr-4 file:rounded-xl file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:opacity-90"
               />
               <p className="mt-1.5 text-xs text-ink-muted">
