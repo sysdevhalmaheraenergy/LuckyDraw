@@ -12,7 +12,7 @@ export default function NewPrizePage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [drawOrder, setDrawOrder] = useState(0);
+  const [drawOrder, setDrawOrder] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -176,7 +176,7 @@ export default function NewPrizePage() {
                 <img
                   src={imageUrl}
                   alt="Preview"
-                  className="mt-2 h-32 w-full rounded-xl object-cover"
+                  className="mt-2 h-32 w-full rounded-xl object-contain"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
@@ -192,13 +192,13 @@ export default function NewPrizePage() {
                 id="order"
                 type="number"
                 value={drawOrder}
-                onChange={(e) => setDrawOrder(Math.max(0, Number(e.target.value)))}
-                min={0}
+                onChange={(e) => setDrawOrder(Math.max(1, Number(e.target.value)))}
+                min={1}
                 required
                 className="mt-2 block w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-ink outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
               />
               <p className="mt-1.5 text-xs text-ink-muted">
-                0 = undian pertama, 1 = undian kedua, dst.
+                1 = undian pertama, 2 = undian kedua, dst.
               </p>
             </div>
 

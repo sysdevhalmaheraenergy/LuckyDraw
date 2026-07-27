@@ -169,7 +169,7 @@ export default async function EventDetailPage({ params }: Context) {
                         />
                       )}
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
-                        <span>Undian ke-{prize.drawOrder + 1}</span>
+                        <span>                        Undian ke-{prize.drawOrder}</span>
                         {validDraw && (
                           <span className="font-semibold text-emerald-500">
                             Pemenang: #{validDraw.coupon.number}

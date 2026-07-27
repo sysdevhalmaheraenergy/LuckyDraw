@@ -13,7 +13,7 @@ export default function EditPrizePage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [drawOrder, setDrawOrder] = useState(0);
+  const [drawOrder, setDrawOrder] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -173,7 +173,7 @@ export default function EditPrizePage() {
                 <img
                   src={imageUrl}
                   alt="Preview"
-                  className="mt-2 h-32 w-full rounded-xl object-cover ring-1 ring-border/50"
+                  className="mt-2 h-32 w-full rounded-xl object-contain ring-1 ring-border/50"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
@@ -189,13 +189,13 @@ export default function EditPrizePage() {
                 id="order"
                 type="number"
                 value={drawOrder}
-                onChange={(e) => setDrawOrder(Math.max(0, Number(e.target.value)))}
-                min={0}
+                onChange={(e) => setDrawOrder(Math.max(1, Number(e.target.value)))}
+                min={1}
                 required
                 className="mt-2 block w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
               <p className="mt-1.5 text-xs text-ink-muted">
-                0 = undian pertama, 1 = undian kedua, dst.
+                1 = undian pertama, 2 = undian kedua, dst.
               </p>
             </div>
 

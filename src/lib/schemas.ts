@@ -37,7 +37,7 @@ export const createPrizeSchema = z
     name: z.string().min(1).openapi({ example: "Hadiah Utama" }),
     description: z.string().optional(),
     imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
-    drawOrder: z.number().int().min(0).openapi({ example: 1 }),
+    drawOrder: z.number().int().min(1).openapi({ example: 1 }),
   })
   .openapi("CreatePrizeInput");
 
@@ -97,7 +97,7 @@ export const updatePrizeSchema = z
     name: z.string().min(1).optional(),
     description: z.string().optional(),
     imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
-    drawOrder: z.number().int().min(0).optional(),
+    drawOrder: z.number().int().min(1).optional(),
   })
   .openapi("UpdatePrizeInput");
 

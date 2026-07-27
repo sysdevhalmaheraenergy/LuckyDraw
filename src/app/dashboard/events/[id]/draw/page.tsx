@@ -245,7 +245,7 @@ export default function DrawPage() {
                     <div className="mb-3 flex items-center justify-between">
                       <h3 className="font-display text-lg font-bold text-ink">{prize.name}</h3>
                       <span className="rounded-full bg-brand/20 px-2.5 py-0.5 text-xs font-semibold text-brand">
-                        #{prize.drawOrder + 1}
+                        #{prize.drawOrder}
                       </span>
                     </div>
                     {prize.description && (
