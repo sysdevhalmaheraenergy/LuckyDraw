@@ -57,7 +57,10 @@ function Digit({
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    if (!spinning) return;
+    if (!spinning) {
+      setValue(target);
+      return;
+    }
     const totalDuration = duration + delay;
     const startTime = performance.now();
     let timer: ReturnType<typeof setTimeout>;

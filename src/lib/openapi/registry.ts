@@ -320,6 +320,22 @@ registry.registerPath({
 });
 
 registry.registerPath({
+  method: "patch",
+  path: "/api/events/{eventId}/coupons/{number}/restore",
+  tags: ["Coupons"],
+  summary: "Pulihkan kupon yang dikecualikan kembali ke status tersedia agar bisa diundi lagi",
+  security,
+  request: { params: z.object({ eventId: z.string(), number: z.string() }) },
+  responses: {
+    200: { description: "Kupon berhasil dipulihkan.", ...jsonContent(z.object({ coupon: couponSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+    404: notFound,
+  },
+});
+
+registry.registerPath({
   method: "post",
   path: "/api/events/{eventId}/prizes/{prizeId}/draw",
   tags: ["Draw"],

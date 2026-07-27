@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { EventStatusToggle } from "@/components/event-status-toggle";
 import { PrizeActions } from "@/components/prize-actions";
 import { CouponExcludeButton } from "./coupon-exclude-button";
+import { CouponRestoreButton } from "./coupon-restore-button";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -215,6 +216,9 @@ export default async function EventDetailPage({ params }: Context) {
                       <td className="px-4 py-3">
                         {coupon.status === "AVAILABLE" && event.status === "DRAFT" && (
                           <CouponExcludeButton eventId={event.id} couponNumber={coupon.number} />
+                        )}
+                        {coupon.status === "EXCLUDED" && event.status === "DRAFT" && (
+                          <CouponRestoreButton eventId={event.id} couponNumber={coupon.number} />
                         )}
                       </td>
                     </tr>

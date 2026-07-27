@@ -293,7 +293,7 @@ export default function DrawPage() {
                   <thead>
                     <tr className="border-b border-border/50 bg-surface/50">
                       <th className="px-4 py-3 font-semibold text-ink">Hadiah</th>
-                      <th className="px-4 py-3 font-semibold text-ink">Pemenenang</th>
+                      <th className="px-4 py-3 font-semibold text-ink">Pemenang</th>
                       <th className="px-4 py-3 font-semibold text-ink">Waktu</th>
                       <th className="px-4 py-3 font-semibold text-ink">Aksi</th>
                     </tr>
