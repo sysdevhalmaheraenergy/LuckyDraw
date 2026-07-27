@@ -2,8 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { BrandMark } from "@/components/brand-mark";
-import { SignOutButton } from "@/components/sign-out-button";
+import { DashboardHeader } from "@/components/dashboard-header";
 
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-ink-muted/10 text-ink-muted",
@@ -34,20 +33,7 @@ export default async function DashboardPage() {
       {/* Glass background */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
 
-      <header className="border-b border-border/50 bg-white/30 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/">
-            <BrandMark />
-          </Link>
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-ink">{session.user.name ?? session.user.email}</p>
-              <p className="text-xs text-ink-muted">{session.user.role}</p>
-            </div>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
+      <DashboardHeader user={session.user} showDashboardLink={false} />
 
       <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-6xl">

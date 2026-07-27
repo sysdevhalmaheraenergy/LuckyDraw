@@ -2,8 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { BrandMark } from "@/components/brand-mark";
-import { SignOutButton } from "@/components/sign-out-button";
+import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 
 export default async function UserPrizesPage() {
@@ -26,26 +25,7 @@ export default async function UserPrizesPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-border px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <Link href="/">
-            <BrandMark />
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="cursor-pointer rounded-full border border-border px-4 py-2 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface-alt"
-            >
-              Dashboard
-            </Link>
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-ink">{session.user.name ?? session.user.email}</p>
-              <p className="text-xs text-ink-muted">{session.user.role}</p>
-            </div>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
+      <DashboardHeader user={session.user} />
 
       <main className="flex-1 px-6 py-10">
         <div className="mx-auto max-w-4xl">

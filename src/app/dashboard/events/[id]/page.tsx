@@ -3,8 +3,7 @@ import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { BrandMark } from "@/components/brand-mark";
-import { SignOutButton } from "@/components/sign-out-button";
+import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { EventStatusToggle } from "@/components/event-status-toggle";
 import { PrizeActions } from "@/components/prize-actions";
@@ -54,26 +53,7 @@ export default async function EventDetailPage({ params }: Context) {
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
       <div className="fixed inset-0 -z-20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand/10 via-transparent to-transparent opacity-30" />
 
-      <header className="relative border-b border-border/50 bg-surface/60 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/">
-            <BrandMark />
-          </Link>
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Link
-              href="/dashboard"
-              className="cursor-pointer rounded-full border border-border/50 bg-surface/50 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:bg-surface-alt/80"
-            >
-              Dashboard
-            </Link>
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-ink">{session.user.name ?? session.user.email}</p>
-              <p className="text-xs text-ink-muted">{session.user.role}</p>
-            </div>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
+      <DashboardHeader user={session.user} />
 
       <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-6xl">

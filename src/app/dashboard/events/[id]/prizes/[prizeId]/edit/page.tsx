@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
+import { DashboardHeader } from "@/components/dashboard-header";
 
 export default function EditPrizePage() {
   const router = useRouter();
@@ -74,19 +74,16 @@ export default function EditPrizePage() {
       {/* Glass background */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
 
-      <header className="border-b border-border/50 bg-white/30 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/">
-            <BrandMark />
-          </Link>
+      <DashboardHeader
+        rightSlot={
           <Link
             href={eventId ? `/dashboard/events/${eventId}` : "/dashboard"}
-            className="cursor-pointer rounded-full border border-border/50 bg-white/30 px-4 py-2 text-sm font-semibold text-ink backdrop-blur-xl transition-all duration-200 hover:border-brand/40 hover:text-brand"
+            className="cursor-pointer rounded-full border border-border/50 bg-white/20 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:border-brand/40 hover:text-brand hover:bg-white/30"
           >
             Kembali
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-lg">

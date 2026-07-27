@@ -16,6 +16,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Lucky Draw — Undian Hadiah Digital",
   description: "Kelola event, hadiah, dan pengundian kupon secara adil dan transparan.",
+  icons: {
+    icon: "/lucky-draw-icon.png",
+  },
 };
 
 export default function RootLayout({

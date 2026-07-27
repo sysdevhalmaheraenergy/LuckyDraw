@@ -23,7 +23,7 @@ interface Prize {
 
 const COLORS = [
   "from-pink-500 to-rose-500",
-  "from-blue-500 to-indigo-500",
+  "from-brand to-brand-2",
   "from-yellow-400 to-amber-500",
   "from-emerald-500 to-teal-500",
   "from-purple-500 to-fuchsia-500",
@@ -372,7 +372,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
             <div className="flex gap-3">
               <button
                 onClick={close}
-                className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg hover:scale-105 transition-transform"
+                className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-brand to-brand-2 shadow-lg shadow-brand/30 hover:scale-105 transition-transform"
               >
                 Tutup
               </button>

@@ -56,7 +56,7 @@ const steps = [
   {
     n: "04",
     title: "Bagikan Hasil",
-    desc: "Lihat riwayat lengkap siapa memenangkan apa, dengan opsi undo bila terjadi kesalahan.",
+    desc: "Lihat riwayat lengkap siapa memenangkan apa, dengan opsi pembatalan bila terjadi kesalahan.",
   },
 ];
 
@@ -113,7 +113,7 @@ export default function Home() {
               {[
                 ["100%", "Acak & Adil"],
                 ["<1s", "Waktu Undi"],
-                ["∞", "Undo Kapan Saja"],
+                ["∞", "Batalkan Kapan Saja"],
               ].map(([value, label]) => (
                 <div key={label} className="text-center">
                   <dt className="sr-only">{label}</dt>
@@ -165,7 +165,7 @@ export default function Home() {
               <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
                 Cara Kerjanya
               </h2>
-              <p className="mt-4 text-ink-muted">Empat langkah, dari nol sampai pemenang diumumkan.</p>
+              <p className="mt-4 text-ink-muted">Empat langkah mudah sampai pemenang diumumkan.</p>
             </div>
 
             <ol className="mt-12 sm:mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { BrandMark } from "@/components/brand-mark";
+import { DashboardHeader } from "@/components/dashboard-header";
 
 export default function NewPrizePage() {
   const router = useRouter();
@@ -50,19 +50,16 @@ export default function NewPrizePage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-border px-6 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <Link href="/">
-            <BrandMark />
-          </Link>
+      <DashboardHeader
+        rightSlot={
           <Link
             href={id ? `/dashboard/events/${id}` : "/dashboard"}
-            className="cursor-pointer rounded-full border border-border px-4 py-2 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-surface-alt"
+            className="cursor-pointer rounded-full border border-border/50 bg-white/20 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/30"
           >
             Kembali
           </Link>
-        </div>
-      </header>
+        }
+      />
 
       <main className="flex-1 px-6 py-10">
         <div className="mx-auto max-w-lg">

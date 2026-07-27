@@ -25,7 +25,7 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-ink-muted transition-colors duration-200 hover:text-ink"
+              className="text-sm font-medium text-ink-muted transition-colors duration-200 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 rounded"
             >
               {link.label}
             </a>
@@ -34,14 +34,14 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-3 md:flex">
           <Link
-            href="/login"
-            className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:text-brand"
+               href="/login"
+               className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
           >
             Masuk
           </Link>
           <Link
-            href="/register"
-            className="cursor-pointer rounded-full bg-gradient-to-br from-brand to-brand-2 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+             href="/register"
+             className="cursor-pointer rounded-full bg-gradient-to-br from-brand to-brand-2 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 hover:shadow-glass-glow active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
           >
             Daftar
           </Link>
@@ -51,8 +51,8 @@ export function SiteHeader() {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          aria-label={open ? "Tutup menu" : "Buka menu"}
-          className="cursor-pointer rounded-lg p-2 text-ink md:hidden"
+           aria-label={open ? "Tutup menu" : "Buka menu"}
+           className="cursor-pointer rounded-lg p-2 text-ink md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
         >
           <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
             {open ? (
@@ -70,22 +70,22 @@ export function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors duration-200 hover:bg-white/30 hover:text-ink"
+               onClick={() => setOpen(false)}
+               className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted transition-colors duration-200 hover:bg-white/30 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
             >
               {link.label}
             </a>
           ))}
           <div className="mt-2 flex flex-col gap-2 border-t border-border/50 pt-3">
             <Link
-              href="/login"
-              className="cursor-pointer rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-white/30"
+               href="/login"
+               className="cursor-pointer rounded-lg px-3 py-2.5 text-center text-sm font-semibold text-ink transition-colors duration-200 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
             >
               Masuk
             </Link>
             <Link
-              href="/register"
-              className="cursor-pointer rounded-lg bg-gradient-to-br from-brand to-brand-2 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+               href="/register"
+               className="cursor-pointer rounded-lg bg-gradient-to-br from-brand to-brand-2 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 hover:shadow-glass-glow active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
             >
               Daftar
             </Link>
