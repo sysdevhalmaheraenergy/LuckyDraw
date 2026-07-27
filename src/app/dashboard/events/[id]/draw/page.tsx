@@ -7,8 +7,8 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DrawCannon } from "@/components/draw-cannon";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { tableRowVariants, getVariants } from "@/lib/motion";
-import { useToast } from "@/components/toast";
 
 interface Prize {
   id: string;
@@ -41,9 +41,12 @@ export default function DrawPage() {
   const [animatingPrize, setAnimatingPrize] = useState<Prize | null>(null);
   const [winningNumber, setWinningNumber] = useState<number[] | null>(null);
   const [error, setError] = useState("");
+  const [undoConfirmOpen, setUndoConfirmOpen] = useState(false);
+  const [pendingUndoResultId, setPendingUndoResultId] = useState<string | null>(null);
+  const [undoLoading, setUndoLoading] = useState(false);
+  const [undoError, setUndoError] = useState("");
   const shouldReduceMotion = useReducedMotion();
   const { container, item } = getVariants(!!shouldReduceMotion);
-  const { showToast } = useToast();
 
   const fetchEvent = useCallback(async () => {
     try {
@@ -106,21 +109,36 @@ export default function DrawPage() {
     void fetchEvent();
   }
 
-  async function handleUndo(resultId: string) {
+  function requestUndo(resultId: string) {
+    setPendingUndoResultId(resultId);
+    setUndoError("");
+    setUndoConfirmOpen(true);
+  }
+
+  async function confirmUndo() {
+    if (!pendingUndoResultId) return;
+
+    setUndoLoading(true);
+    setUndoError("");
+
     try {
-      const res = await fetch(`/api/draw-results/${resultId}/undo`, {
+      const res = await fetch(`/api/draw-results/${pendingUndoResultId}/undo`, {
         method: "POST",
       });
 
       if (!res.ok) {
         const data = await res.json();
-        showToast(data.error ?? "Gagal undo.", "error");
+        setUndoError(data.error ?? "Gagal membatalkan undian.");
         return;
       }
 
+      setUndoConfirmOpen(false);
+      setPendingUndoResultId(null);
       void fetchEvent();
     } catch {
-      showToast("Gagal undo.", "error");
+      setUndoError("Gagal membatalkan undian.");
+    } finally {
+      setUndoLoading(false);
     }
   }
 
@@ -330,14 +348,14 @@ export default function DrawPage() {
                           </td>
                           <td className="px-4 py-3">
                             {validResult && event.status === "ONGOING" && (
-                              <motion.button
-                                onClick={() => handleUndo(validResult.id)}
-                                className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-warning transition-colors duration-200 hover:bg-warning/10"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                              >
-                                Batalkan
-                              </motion.button>
+                                <motion.button
+                                  onClick={() => requestUndo(validResult.id)}
+                                  className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-warning transition-colors duration-200 hover:bg-warning/10"
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  Batalkan
+                                </motion.button>
                             )}
                           </td>
                         </motion.tr>
@@ -371,6 +389,32 @@ export default function DrawPage() {
           )}
         </div>
       </main>
+
+      <ConfirmDialog
+        isOpen={undoConfirmOpen}
+        onClose={() => {
+          setUndoConfirmOpen(false);
+          setPendingUndoResultId(null);
+          setUndoError("");
+        }}
+        title="Batalkan Hasil Undian"
+        message={
+          pendingUndoResultId
+            ? (() => {
+                const prizeName = event?.prizes.find((p) =>
+                  p.drawResults.some((r) => r.id === pendingUndoResultId),
+                )?.name;
+                return `Yakin ingin membatalkan hasil undian untuk hadiah "${prizeName}"? Kupon akan tersedia kembali untuk undian.`;
+              })()
+            : "Yakin ingin membatalkan hasil undian? Kupon akan tersedia kembali untuk undian."
+        }
+        confirmLabel="Batalkan Undian"
+        cancelLabel="Batal"
+        variant="warning"
+        loading={undoLoading}
+        error={undoError}
+        onConfirm={confirmUndo}
+      />
     </motion.div>
   );
 }

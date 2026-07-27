@@ -87,6 +87,10 @@ export function Modal({ isOpen, onClose, title, children, size = "md" }: ModalPr
         visible: { opacity: 1, scale: 1, y: 0 },
       };
 
+  if (typeof document === "undefined") {
+    return null;
+  }
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
