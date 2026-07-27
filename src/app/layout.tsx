@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
+import { ToastProvider } from "@/components/toast";
 
 const outfit = Outfit({
   variable: "--font-display",
@@ -31,7 +32,9 @@ export default function RootLayout({
       lang="id"
       className={`${outfit.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-surface text-ink font-body">{children}</body>
+      <body className="min-h-full flex flex-col bg-surface text-ink font-body">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 interface EventStatusToggleProps {
   eventId: string;
@@ -13,6 +14,7 @@ export function EventStatusToggle({ eventId, currentStatus, hasPrizes }: EventSt
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   async function transitionTo(status: string) {
     setLoading(true);
@@ -51,11 +53,7 @@ export function EventStatusToggle({ eventId, currentStatus, hasPrizes }: EventSt
       )}
       {currentStatus === "ONGOING" && (
         <button
-          onClick={() => {
-            if (confirm("Yakin ingin menyelesaikan undian? Aksi ini tidak bisa dibatalkan.")) {
-              transitionTo("COMPLETED");
-            }
-          }}
+          onClick={() => setIsCompleteModalOpen(true)}
           disabled={loading}
           className="cursor-pointer rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         >
@@ -63,6 +61,22 @@ export function EventStatusToggle({ eventId, currentStatus, hasPrizes }: EventSt
         </button>
       )}
       {error && <p className="text-sm text-danger">{error}</p>}
+
+      <ConfirmDialog
+        isOpen={isCompleteModalOpen}
+        onClose={() => {
+          setIsCompleteModalOpen(false);
+          setError("");
+        }}
+        title="Selesaikan Undian"
+        message="Yakin ingin menyelesaikan undian? Aksi ini tidak bisa dibatalkan."
+        confirmLabel="Selesaikan"
+        cancelLabel="Batal"
+        variant="warning"
+        loading={loading}
+        error={error}
+        onConfirm={() => transitionTo("COMPLETED")}
+      />
     </div>
   );
 }

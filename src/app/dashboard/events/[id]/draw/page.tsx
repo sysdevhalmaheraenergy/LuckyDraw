@@ -8,6 +8,7 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DrawCannon } from "@/components/draw-cannon";
 import { tableRowVariants, getVariants } from "@/lib/motion";
+import { useToast } from "@/components/toast";
 
 interface Prize {
   id: string;
@@ -42,6 +43,7 @@ export default function DrawPage() {
   const [error, setError] = useState("");
   const shouldReduceMotion = useReducedMotion();
   const { container, item } = getVariants(!!shouldReduceMotion);
+  const { showToast } = useToast();
 
   const fetchEvent = useCallback(async () => {
     try {
@@ -112,12 +114,13 @@ export default function DrawPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        alert(data.error ?? "Gagal undo.");
+        showToast(data.error ?? "Gagal undo.", "error");
+        return;
       }
 
       void fetchEvent();
     } catch {
-      alert("Gagal undo.");
+      showToast("Gagal undo.", "error");
     }
   }
 
