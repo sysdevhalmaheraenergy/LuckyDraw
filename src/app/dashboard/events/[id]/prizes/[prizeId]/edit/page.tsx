@@ -19,6 +19,29 @@ export default function EditPrizePage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [existingOrders, setExistingOrders] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function fetchExistingPrizes() {
+      if (!eventId) return;
+      try {
+        const res = await fetch(`/api/events/${eventId}/prizes`);
+        if (res.ok) {
+          const data = await res.json();
+          const orders = data.prizes
+            .filter((p: { id: string }) => p.id !== prizeId)
+            .map((p: { drawOrder: number }) => p.drawOrder)
+            .sort((a: number, b: number) => a - b);
+          setExistingOrders(orders);
+        }
+      } catch {
+        // ignore
+      }
+    }
+    fetchExistingPrizes();
+  }, [eventId, prizeId]);
+
+  const duplicateOrder = existingOrders.includes(drawOrder);
 
   useEffect(() => {
     async function fetchPrize() {
@@ -225,6 +248,16 @@ export default function EditPrizePage() {
               <p className="mt-1.5 text-xs text-ink-muted">
                 1 = undian pertama, 2 = undian kedua, dst.
               </p>
+              {duplicateOrder && (
+                <p className="mt-1.5 text-xs text-danger">
+                  Urutan ini sudah digunakan hadiah lain. Pilih nomor lain.
+                </p>
+              )}
+              {existingOrders.length > 0 && (
+                <p className="mt-1.5 text-xs text-ink-muted">
+                  Urutan yang sudah dipakai: {existingOrders.join(", ")}
+                </p>
+              )}
             </div>
 
             {error && (
@@ -235,7 +268,7 @@ export default function EditPrizePage() {
 
             <button
               type="submit"
-              disabled={saving || uploading || !name.trim() || !eventId}
+              disabled={saving || uploading || !name.trim() || !eventId || duplicateOrder}
               className="w-full cursor-pointer rounded-xl bg-gradient-to-br from-brand to-brand-2 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
