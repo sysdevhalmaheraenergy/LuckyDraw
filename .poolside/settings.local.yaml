@@ -1,0 +1,15 @@
+tools:
+    shell:
+        allow:
+            - find *
+            - head *
+            - ls *
+            - cat *
+            - curl *
+            - echo *
+            - ssh *
+            - grep *
+            - cd *
+            - npx tsc *
+            - npm run *
+            - tail *

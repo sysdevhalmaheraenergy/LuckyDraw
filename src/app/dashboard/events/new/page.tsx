@@ -42,6 +42,7 @@ export default function NewEventPage() {
   return (
     <div className="flex flex-1 flex-col">
       <DashboardHeader
+        showDashboardLink={false}
         rightSlot={
           <Link
             href="/dashboard"

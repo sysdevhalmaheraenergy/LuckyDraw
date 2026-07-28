@@ -32,6 +32,7 @@ export function EventStatusToggle({ eventId, currentStatus, hasPrizes }: EventSt
         throw new Error(data.error ?? "Gagal mengubah status.");
       }
 
+      setIsCompleteModalOpen(false);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
