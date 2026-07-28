@@ -80,21 +80,22 @@ pipeline {
                         echo "Branch: ${env.DEPLOY_BRANCH}"
                         echo "================================"
 
-                        # Sync source code to server (no git clone needed on server)
-                        echo "Syncing code to server via rsync..."
-                        rsync -avz --delete \
-                            --exclude="node_modules" \
-                            --exclude=".git" \
-                            --exclude=".next" \
-                            --exclude=".env" \
-                            --exclude="coverage" \
-                            --exclude="*.log" \
-                            --exclude="Jenkinsfile" \
-                            --exclude="deploy.sh" \
-                            ./ ${env.USER}@${env.HOST}:${env.APP_DIR}/
+                        # Sync source code to server (no rsync needed on agent)
+                        echo "Syncing code to server via tar+ssh..."
+                        ssh -p ${env.SSH_PORT} -o StrictHostKeyChecking=no ${env.USER}@${env.HOST} "mkdir -p ${env.APP_DIR}"
+                        tar --exclude='node_modules' \
+                            --exclude='.git' \
+                            --exclude='.next' \
+                            --exclude='.env' \
+                            --exclude='coverage' \
+                            --exclude='*.log' \
+                            --exclude='Jenkinsfile' \
+                            --exclude='deploy.sh' \
+                            -czf - . | \
+                        ssh -p ${env.SSH_PORT} -o StrictHostKeyChecking=no ${env.USER}@${env.HOST} "tar -xzf - -C ${env.APP_DIR}"
 
                         # Create .env and manage Docker container on server
-                        ssh -i ~/.ssh/id_ed25519 -p ${env.SSH_PORT} -o StrictHostKeyChecking=no ${env.USER}@${env.HOST} << 'REMOTE_EOF'
+                        ssh -p ${env.SSH_PORT} -o StrictHostKeyChecking=no ${env.USER}@${env.HOST} << 'REMOTE_EOF'
 set -e
 
 APP_DIR="${env.APP_DIR}"

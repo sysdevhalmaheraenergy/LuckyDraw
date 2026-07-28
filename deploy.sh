@@ -46,6 +46,7 @@ ssh -p $SSH_PORT -o StrictHostKeyChecking=no $SERVER "
 # Step 3: Sync files to server
 echo -e "${YELLOW}[3/5] Syncing files to server...${NC}"
 rsync -avz --delete \
+    -e "ssh -p $SSH_PORT" \
     --exclude="node_modules" \
     --exclude=".git" \
     --exclude=".next" \
