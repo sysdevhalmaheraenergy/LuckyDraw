@@ -10,7 +10,8 @@ services:
       - NODE_ENV=production
       - PORT=${PORT:-3019}
       - HOST=0.0.0.0
-      - JWT_SECRET=${JWT_SECRET}
+      - AUTH_URL=${AUTH_URL}
+      - AUTH_SECRET=${AUTH_SECRET}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
       - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
@@ -20,5 +21,5 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-    # Note: JWT_SECRET and NEXTAUTH_SECRET are passed via .env file at runtime
+    # Note: AUTH_SECRET, NEXTAUTH_SECRET, and AUTH_URL are passed via .env file at runtime
     # Do not hardcode secrets in docker-compose.yml
