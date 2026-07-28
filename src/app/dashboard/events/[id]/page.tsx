@@ -7,18 +7,33 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { EventStatusToggle } from "@/components/event-status-toggle";
 import { PrizeActions } from "@/components/prize-actions";
+import { Pagination } from "@/components/pagination";
 import { CouponExcludeButton } from "./coupon-exclude-button";
 import { CouponRestoreButton } from "./coupon-restore-button";
 
-type Context = { params: Promise<{ id: string }> };
+const PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 25;
 
-export default async function EventDetailPage({ params }: Context) {
+type Context = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string; limit?: string }>;
+};
+
+export default async function EventDetailPage({ params, searchParams }: Context) {
   const session = await auth();
   if (!session?.user) {
     redirect("/login?callbackUrl=/dashboard");
   }
 
   const { id } = await params;
+  const { page: pageParam, limit: limitParam } = await searchParams;
+
+  const page = Math.max(1, Number(pageParam) || DEFAULT_PAGE);
+  let limit = Number(limitParam) || DEFAULT_LIMIT;
+  if (!PAGE_SIZE_OPTIONS.includes(limit as (typeof PAGE_SIZE_OPTIONS)[number])) {
+    limit = DEFAULT_LIMIT;
+  }
 
   const event = await prisma.event.findUnique({
     where: { id },
@@ -34,7 +49,8 @@ export default async function EventDetailPage({ params }: Context) {
       },
       coupons: {
         orderBy: { number: "asc" },
-        take: 200,
+        skip: (page - 1) * limit,
+        take: limit,
       },
       _count: { select: { coupons: true, prizes: true } },
     },
@@ -44,9 +60,16 @@ export default async function EventDetailPage({ params }: Context) {
     notFound();
   }
 
-  const totalExcluded = event.coupons.filter((c) => c.status === "EXCLUDED").length;
-  const totalWon = event.coupons.filter((c) => c.status === "WON").length;
-  const totalAvailable = event.coupons.filter((c) => c.status === "AVAILABLE").length;
+  const statusCounts = await prisma.coupon.groupBy({
+    where: { eventId: id },
+    by: ["status"],
+    _count: true,
+  });
+
+  const counts = Object.fromEntries(statusCounts.map((s) => [s.status, s._count]));
+  const totalExcluded = counts.EXCLUDED ?? 0;
+  const totalWon = counts.WON ?? 0;
+  const totalAvailable = counts.AVAILABLE ?? 0;
 
   return (
     <div className="relative flex min-h-screen flex-1 flex-col">
@@ -223,36 +246,59 @@ export default async function EventDetailPage({ params }: Context) {
           <section className="mt-8 sm:mt-10">
             <h2 className="font-display text-lg font-semibold text-ink">Kupon</h2>
             <p className="text-xs text-ink-muted">
-              Menampilkan 200 kupon pertama ({totalAvailable} tersedia, {totalWon} menang, {totalExcluded} dikecualikan)
+              {totalAvailable} tersedia, {totalWon} menang, {totalExcluded} dikecualikan
             </p>
 
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-border/50 bg-surface/50 shadow-card backdrop-blur-xl">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-border/50 bg-surface-alt/50">
-                    <th className="px-4 py-3 font-semibold text-ink">No.</th>
-                    <th className="px-4 py-3 font-semibold text-ink">Status</th>
-                    <th className="px-4 py-3 font-semibold text-ink">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {event.coupons.map((coupon) => (
-                    <tr key={coupon.id} className="border-b border-border/50 last:border-b-0 transition-colors duration-200 hover:bg-brand-soft/5">
-                      <td className="px-4 py-3 font-display font-semibold text-ink">#{coupon.number}</td>
-                      <td className="px-4 py-3"><StatusBadge status={coupon.status} /></td>
-                      <td className="px-4 py-3">
-                        {coupon.status === "AVAILABLE" && event.status === "DRAFT" && (
-                          <CouponExcludeButton eventId={event.id} couponNumber={coupon.number} />
-                        )}
-                        {coupon.status === "EXCLUDED" && event.status === "DRAFT" && (
-                          <CouponRestoreButton eventId={event.id} couponNumber={coupon.number} />
-                        )}
-                      </td>
+            {event.coupons.length === 0 ? (
+              <div className="mt-4 rounded-2xl border-2 border-dashed border-border/50 bg-surface/50 p-8 text-center shadow-card backdrop-blur-xl sm:p-12">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-xl bg-surface-alt text-brand">
+                  <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <h3 className="mt-4 font-display text-base font-semibold text-ink">Tidak ada kupon</h3>
+                <p className="mt-1 max-w-sm text-sm text-ink-muted">
+                  Halaman ini tidak memiliki kupon. Coba halaman lain atau ubah filter.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 overflow-x-auto rounded-2xl border border-border/50 bg-surface/50 shadow-card backdrop-blur-xl">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-border/50 bg-surface-alt/50">
+                      <th className="px-4 py-3 font-semibold text-ink">No.</th>
+                      <th className="px-4 py-3 font-semibold text-ink">Status</th>
+                      <th className="px-4 py-3 font-semibold text-ink">Aksi</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {event.coupons.map((coupon) => (
+                      <tr key={coupon.id} className="border-b border-border/50 last:border-b-0 transition-colors duration-200 hover:bg-brand-soft/5">
+                        <td className="px-4 py-3 font-display font-semibold text-ink">#{coupon.number}</td>
+                        <td className="px-4 py-3"><StatusBadge status={coupon.status} /></td>
+                        <td className="px-4 py-3">
+                          {coupon.status === "AVAILABLE" && event.status === "DRAFT" && (
+                            <CouponExcludeButton eventId={event.id} couponNumber={coupon.number} />
+                          )}
+                          {coupon.status === "EXCLUDED" && event.status === "DRAFT" && (
+                            <CouponRestoreButton eventId={event.id} couponNumber={coupon.number} />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <Pagination
+              currentPage={page}
+              totalPages={Math.max(1, Math.ceil(event._count.coupons / limit))}
+              total={event._count.coupons}
+              pageSize={limit}
+              pageSizeOptions={[10, 25, 50]}
+              baseUrl={`/dashboard/events/${event.id}`}
+            />
           </section>
         </div>
       </main>

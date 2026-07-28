@@ -23,6 +23,7 @@ import {
   presignUploadResponseSchema,
   finalizeUploadSchema,
   finalizeUploadResponseSchema,
+  couponsListResponseSchema,
 } from "@/lib/schemas";
 
 export const registry = new OpenAPIRegistry();
@@ -289,14 +290,18 @@ registry.registerPath({
   method: "get",
   path: "/api/events/{eventId}/coupons",
   tags: ["Coupons"],
-  summary: "List semua kupon pada sebuah event, bisa difilter lewat query ?status=",
+  summary: "List kupon pada sebuah event dengan pagination, bisa difilter lewat query ?status=",
   security,
   request: {
     params: z.object({ eventId: z.string() }),
-    query: z.object({ status: couponSchema.shape.status.optional() }),
+    query: z.object({
+      status: couponSchema.shape.status.optional(),
+      page: z.number().int().min(1).optional().openapi({ example: 1 }),
+      limit: z.number().int().min(1).optional().openapi({ example: 25 }),
+    }),
   },
   responses: {
-    200: { description: "Daftar kupon.", ...jsonContent(z.object({ coupons: z.array(couponSchema) })) },
+    200: { description: "Daftar kupon dengan metadata pagination.", ...jsonContent(couponsListResponseSchema) },
     400: badRequest,
     401: unauthorized,
     404: notFound,

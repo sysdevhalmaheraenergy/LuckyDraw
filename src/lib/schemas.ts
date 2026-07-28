@@ -188,3 +188,19 @@ export const okResponseSchema = z
     ok: z.literal(true),
   })
   .openapi("OkResponse");
+
+export const paginationSchema = z
+  .object({
+    page: z.number().int().min(1).openapi({ example: 1 }),
+    limit: z.number().int().min(1).openapi({ example: 25 }),
+    total: z.number().int().min(0).openapi({ example: 100 }),
+    totalPages: z.number().int().min(1).openapi({ example: 4 }),
+  })
+  .openapi("Pagination");
+
+export const couponsListResponseSchema = z
+  .object({
+    coupons: z.array(couponSchema),
+    pagination: paginationSchema,
+  })
+  .openapi("CouponsListResponse");
