@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { Spinner } from "@/components/spinner";
 
 export default function EditPrizePage() {
   const router = useRouter();
@@ -14,12 +15,15 @@ export default function EditPrizePage() {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [drawOrder, setDrawOrder] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchPrize() {
+      setLoading(true);
+      setError("");
       try {
         const res = await fetch(`/api/events/${eventId}/prizes/${prizeId}`);
         if (!res.ok) {
@@ -33,6 +37,8 @@ export default function EditPrizePage() {
         setDrawOrder(prize.drawOrder);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+      } finally {
+        setLoading(false);
       }
     }
     fetchPrize();
@@ -41,7 +47,7 @@ export default function EditPrizePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!eventId || !prizeId) return;
-    setLoading(true);
+    setSaving(true);
     setError("");
 
     try {
@@ -65,7 +71,7 @@ export default function EditPrizePage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
 
@@ -94,11 +100,20 @@ export default function EditPrizePage() {
             Perbarui detail hadiah yang akan diundi.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-5 sm:space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-ink">
-                Nama Hadiah
-              </label>
+          {loading ? (
+            <div className="mt-8">
+              <Spinner label="Memuat..." centered />
+            </div>
+          ) : error ? (
+            <div className="mt-8 rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger">
+              {error}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-5 sm:space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-semibold text-ink">
+                  Nama Hadiah
+                </label>
               <input
                 id="name"
                 type="text"
@@ -207,12 +222,13 @@ export default function EditPrizePage() {
 
             <button
               type="submit"
-              disabled={loading || uploading || !name.trim() || !eventId}
+              disabled={saving || uploading || !name.trim() || !eventId}
               className="w-full cursor-pointer rounded-xl bg-gradient-to-br from-brand to-brand-2 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {loading ? "Menyimpan..." : "Simpan Perubahan"}
-            </button>
-          </form>
+              {saving ? "Menyimpan..." : "Simpan Perubahan"}
+              </button>
+            </form>
+          )}
         </div>
       </main>
     </div>
