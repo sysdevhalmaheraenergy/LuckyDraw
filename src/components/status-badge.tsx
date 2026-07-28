@@ -19,7 +19,7 @@ const labels: Record<string, string> = {
   WON: "Menang",
   EXCLUDED: "Dikecualikan",
   PENDING: "Menunggu Diundi",
-  DRAWN: "Diundi",
+  DRAWN: "Sudah Diundi",
   VALID: "Sah",
   UNDONE: "Dibatalkan",
 };
