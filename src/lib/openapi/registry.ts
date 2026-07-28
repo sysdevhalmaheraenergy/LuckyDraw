@@ -18,6 +18,11 @@ import {
   okResponseSchema,
   registerSchema,
   userSchema,
+  claimCouponSchema,
+  presignUploadSchema,
+  presignUploadResponseSchema,
+  finalizeUploadSchema,
+  finalizeUploadResponseSchema,
 } from "@/lib/schemas";
 
 export const registry = new OpenAPIRegistry();
@@ -180,6 +185,40 @@ registry.registerPath({
 
 registry.registerPath({
   method: "post",
+  path: "/api/uploads/presign",
+  tags: ["Uploads"],
+  summary: "Langkah 1: minta signed URL untuk upload gambar hadiah ke Firebase Storage",
+  description:
+    "Server tidak menerima file secara langsung. Response berisi `uploadUrl` (signed URL, berlaku 5 menit) — upload file lewat PUT langsung ke URL itu dari browser, dengan header Content-Type yang SAMA persis dengan yang dikirim di request ini. Setelah PUT berhasil, panggil POST /api/uploads/finalize dengan `path` yang didapat di sini.",
+  security,
+  request: { body: jsonContent(presignUploadSchema) },
+  responses: {
+    200: { description: "Signed URL untuk upload.", ...jsonContent(presignUploadResponseSchema) },
+    400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/uploads/finalize",
+  tags: ["Uploads"],
+  summary: "Langkah 2: finalisasi upload, jadikan file publik, dapatkan URL permanen",
+  description:
+    "Panggil setelah PUT ke uploadUrl dari /api/uploads/presign selesai. URL hasilnya dipakai sebagai `imageUrl` saat membuat/update hadiah.",
+  security,
+  request: { body: jsonContent(finalizeUploadSchema) },
+  responses: {
+    200: { description: "URL publik gambar.", ...jsonContent(finalizeUploadResponseSchema) },
+    400: { description: "Path tidak valid atau file belum selesai diupload.", ...jsonContent(errorResponseSchema) },
+    401: unauthorized,
+    403: forbidden,
+  },
+});
+
+registry.registerPath({
+  method: "post",
   path: "/api/events/{eventId}/prizes",
   tags: ["Prizes"],
   summary: "Tambah hadiah ke sebuah event",
@@ -281,6 +320,22 @@ registry.registerPath({
 });
 
 registry.registerPath({
+  method: "patch",
+  path: "/api/events/{eventId}/coupons/{number}/restore",
+  tags: ["Coupons"],
+  summary: "Pulihkan kupon yang dikecualikan kembali ke status tersedia agar bisa diundi lagi",
+  security,
+  request: { params: z.object({ eventId: z.string(), number: z.string() }) },
+  responses: {
+    200: { description: "Kupon berhasil dipulihkan.", ...jsonContent(z.object({ coupon: couponSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+    404: notFound,
+  },
+});
+
+registry.registerPath({
   method: "post",
   path: "/api/events/{eventId}/prizes/{prizeId}/draw",
   tags: ["Draw"],
@@ -294,6 +349,32 @@ registry.registerPath({
     403: forbidden,
     404: notFound,
     409: { description: "Race condition saat memilih kupon, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/coupons/claim",
+  tags: ["Coupons"],
+  summary: "Klaim kupon dengan kode unik (user yang sedang login menjadi pemilik kupon)",
+  security,
+  request: { body: jsonContent(claimCouponSchema) },
+  responses: {
+    200: { description: "Kupon berhasil diklaim.", ...jsonContent(z.object({ coupon: couponSchema, event: eventSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    404: notFound,
+    409: { description: "Race condition, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/api/events/public",
+  tags: ["Events"],
+  summary: "List event publik (hanya yang berstatus ONGOING atau COMPLETED)",
+  responses: {
+    200: { description: "Daftar event publik.", ...jsonContent(z.object({ events: z.array(eventListItemSchema) })) },
   },
 });
 

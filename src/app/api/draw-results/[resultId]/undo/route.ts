@@ -32,7 +32,7 @@ export async function POST(_request: Request, ctx: Context) {
         where: { id: resultId },
         data: { status: "UNDONE", undoneAt: new Date() },
       });
-    });
+    }, { timeout: 30000 });
 
     return NextResponse.json({ drawResult: updated });
   } catch (error) {

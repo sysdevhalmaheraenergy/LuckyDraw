@@ -27,7 +27,7 @@ const features = [
   },
   {
     title: "Peran Admin & Staff",
-    desc: "Kontrol akses berlapis — admin mengelola event, staff bisa membantu jalannya acara.",
+    desc: "Kontrol akses berlapis — admin mengelola event, staff bisa membantu jalankan acara.",
     icon: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 10v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75" />,
   },
   {
@@ -56,18 +56,22 @@ const steps = [
   {
     n: "04",
     title: "Bagikan Hasil",
-    desc: "Lihat riwayat lengkap siapa memenangkan apa, dengan opsi undo bila terjadi kesalahan.",
+    desc: "Lihat riwayat lengkap siapa memenangkan apa, dengan opsi pembatalan bila terjadi kesalahan.",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="relative flex flex-1 flex-col overflow-hidden">
+      {/* Gradient background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+      <div className="fixed inset-0 -z-20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand/10 via-transparent to-transparent opacity-30" />
+
       <SiteHeader />
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden px-6 pb-24 pt-20 sm:pt-28">
+        <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pt-24">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-0 top-[-10rem] -z-10 flex justify-center blur-3xl"
@@ -76,12 +80,12 @@ export default function Home() {
           </div>
 
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-4 py-1.5 text-xs font-semibold text-brand">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-white/30 px-4 py-1.5 text-xs font-semibold text-brand backdrop-blur-xl">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Undian kupon yang adil &amp; transparan
             </span>
 
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-6xl">
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl md:text-6xl">
               Jalankan Undian Hadiah <span className="text-brand">Tanpa Drama</span>
             </h1>
 
@@ -93,23 +97,23 @@ export default function Home() {
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/register"
-                className="cursor-pointer rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-transform duration-200 hover:opacity-90 active:scale-[0.98]"
+                className="cursor-pointer rounded-full bg-gradient-to-br from-brand to-brand-2 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
               >
                 Mulai Gratis
               </Link>
               <Link
                 href="/login"
-                className="cursor-pointer rounded-full border border-border bg-surface-alt px-7 py-3.5 text-sm font-semibold text-ink transition-colors duration-200 hover:border-brand/40 hover:text-brand"
+                className="cursor-pointer rounded-full border border-border/50 bg-white/30 px-7 py-3.5 text-sm font-semibold text-ink backdrop-blur-xl transition-all duration-200 hover:border-brand/40 hover:text-brand hover:bg-white/40"
               >
                 Masuk ke Akun
               </Link>
             </div>
 
-            <dl className="mt-16 grid w-full grid-cols-3 gap-6 border-t border-border pt-8">
+            <dl className="mt-16 grid w-full grid-cols-3 gap-6 border-t border-border/50 pt-8">
               {[
                 ["100%", "Acak & Adil"],
                 ["<1s", "Waktu Undi"],
-                ["∞", "Undo Kapan Saja"],
+                ["∞", "Batalkan Kapan Saja"],
               ].map(([value, label]) => (
                 <div key={label} className="text-center">
                   <dt className="sr-only">{label}</dt>
@@ -122,7 +126,7 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section id="fitur" className="px-6 py-20">
+        <section className="px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-6xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
@@ -133,13 +137,13 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 sm:mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((f) => (
                 <div
                   key={f.title}
-                  className="group rounded-2xl border border-border bg-surface-alt p-6 transition-colors duration-200 hover:border-brand/30"
+                  className="group rounded-2xl border border-border/50 bg-white/40 p-6 backdrop-blur-xl transition-all duration-300 hover:border-brand/30 hover:bg-white/50"
                 >
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand transition-colors duration-200 group-hover:bg-brand group-hover:text-white">
+                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
                     <svg viewBox="0 0 24 24" fill="none" className="h-5.5 w-5.5" aria-hidden="true">
                       <g stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                         {f.icon}
@@ -155,16 +159,16 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section id="cara-kerja" className="px-6 py-20">
-          <div className="mx-auto max-w-6xl rounded-3xl border border-border bg-surface-alt p-8 sm:p-14">
+        <section className="px-4 py-16 sm:py-20">
+          <div className="mx-auto max-w-6xl rounded-3xl border border-border/50 bg-white/30 p-6 sm:p-8 md:p-14 backdrop-blur-xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
                 Cara Kerjanya
               </h2>
-              <p className="mt-4 text-ink-muted">Empat langkah, dari nol sampai pemenang diumumkan.</p>
+              <p className="mt-4 text-ink-muted">Empat langkah mudah sampai pemenang diumumkan.</p>
             </div>
 
-            <ol className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <ol className="mt-12 sm:mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((s) => (
                 <li key={s.n} className="relative">
                   <span className="font-display text-4xl font-bold text-brand/25">{s.n}</span>
@@ -177,9 +181,9 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="px-6 pb-24">
-          <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 rounded-3xl bg-gradient-to-br from-brand to-brand-2 px-8 py-16 text-center shadow-xl shadow-brand/20 sm:px-14">
-            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        <section className="px-4 pb-16 sm:pb-24">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 rounded-3xl bg-gradient-to-br from-brand to-brand-2 px-6 py-12 text-center shadow-xl shadow-brand/20 sm:px-8 sm:py-16 md:px-14">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
               Siap menjalankan undian berikutnya?
             </h2>
             <p className="max-w-md text-sm text-white/80 sm:text-base">
@@ -187,7 +191,7 @@ export default function Home() {
             </p>
             <Link
               href="/register"
-              className="cursor-pointer rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-brand-2 shadow-lg transition-transform duration-200 hover:opacity-90 active:scale-[0.98]"
+              className="cursor-pointer rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-brand-2 shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
             >
               Daftar Sekarang
             </Link>
@@ -195,8 +199,8 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t border-border px-6 py-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
+      <footer className="border-t border-border/50 bg-white/30 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
           <BrandMark />
           <div className="flex items-center gap-6 text-sm text-ink-muted">
             <Link href="/api-docs" className="transition-colors duration-200 hover:text-ink">

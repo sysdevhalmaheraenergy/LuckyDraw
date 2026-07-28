@@ -2,6 +2,7 @@
   "name": "lucky-draw",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +13,9 @@
     "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^12.42.2",
+    "firebase-admin": "^14.2.0",
     "next": "16.2.11",
     "next-auth": "^5.0.0-beta.32",
     "prisma": "^6.19.3",
@@ -23,6 +27,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

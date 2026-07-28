@@ -36,8 +36,8 @@ export const createPrizeSchema = z
   .object({
     name: z.string().min(1).openapi({ example: "Hadiah Utama" }),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
-    drawOrder: z.number().int().min(0).openapi({ example: 1 }),
+    imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
+    drawOrder: z.number().int().min(1).openapi({ example: 1 }),
   })
   .openapi("CreatePrizeInput");
 
@@ -50,6 +50,34 @@ export const registerSchema = z
   })
   .openapi("RegisterInput");
 
+const allowedImageTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
+
+export const presignUploadSchema = z
+  .object({
+    fileName: z.string().min(1).openapi({ example: "hadiah-utama.jpg" }),
+    contentType: z.enum(allowedImageTypes).openapi({ example: "image/jpeg" }),
+  })
+  .openapi("PresignUploadInput");
+
+export const presignUploadResponseSchema = z
+  .object({
+    uploadUrl: z.string().url().openapi({ description: "Signed URL, upload file lewat PUT ke sini (berlaku 5 menit)." }),
+    path: z.string().openapi({ description: "Path object di storage, dipakai untuk finalize." }),
+  })
+  .openapi("PresignUploadResponse");
+
+export const finalizeUploadSchema = z
+  .object({
+    path: z.string().min(1).openapi({ example: "lucky-draw/prizes/abc123/1706000000000-hadiah-utama.jpg" }),
+  })
+  .openapi("FinalizeUploadInput");
+
+export const finalizeUploadResponseSchema = z
+  .object({
+    url: z.string().url().openapi({ description: "URL publik permanen, simpan ini sebagai imageUrl hadiah." }),
+  })
+  .openapi("FinalizeUploadResponse");
+
 export const updateEventSchema = z
   .object({
     name: z.string().min(1).optional(),
@@ -58,12 +86,18 @@ export const updateEventSchema = z
   })
   .openapi("UpdateEventInput");
 
+export const claimCouponSchema = z
+  .object({
+    code: z.string().min(1).openapi({ example: "cm8b3..." }),
+  })
+  .openapi("ClaimCouponInput");
+
 export const updatePrizeSchema = z
   .object({
     name: z.string().min(1).optional(),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
-    drawOrder: z.number().int().min(0).optional(),
+    imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
+    drawOrder: z.number().int().min(1).optional(),
   })
   .openapi("UpdatePrizeInput");
 
