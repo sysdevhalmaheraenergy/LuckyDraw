@@ -143,8 +143,21 @@ export default function EditPrizePage() {
               <label htmlFor="image" className="block text-sm font-semibold text-ink">
                 Gambar <span className="text-ink-muted">(opsional)</span>
               </label>
+              <div className="mt-2 flex items-center gap-3">
+                <label
+                  htmlFor="image-input"
+                  className="cursor-pointer rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:border-brand hover:bg-white/70"
+                >
+                  {imageUrl ? "Ganti File" : "Pilih File"}
+                </label>
+                {imageUrl && (
+                  <span className="text-xs text-ink-muted">
+                    Gambar sudah diunggah
+                  </span>
+                )}
+              </div>
               <input
-                id="image"
+                id="image-input"
                 type="file"
                 accept=".jpg,.jpeg,.png,image/jpeg,image/png"
                 onChange={async (e) => {
@@ -176,7 +189,7 @@ export default function EditPrizePage() {
                     setUploading(false);
                   }
                 }}
-                className="mt-2 block w-full text-sm text-ink file:mr-4 file:rounded-xl file:border-0 file:bg-brand file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:opacity-90"
+                className="sr-only"
               />
               <p className="mt-1.5 text-xs text-ink-muted">
                 Format: JPG, JPEG, PNG. Maksimal 500 KB.
