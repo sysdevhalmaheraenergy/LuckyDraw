@@ -43,6 +43,18 @@ export async function PATCH(request: NextRequest, ctx: Context) {
       throw new ApiError("Hadiah tidak ditemukan.", 404);
     }
 
+    if (body.drawOrder !== undefined && body.drawOrder !== existing.drawOrder) {
+      const conflict = await prisma.prize.findFirst({
+        where: { eventId, drawOrder: body.drawOrder, id: { not: prizeId } },
+      });
+      if (conflict) {
+        throw new ApiError(
+          `Urutan undian ${body.drawOrder} sudah digunakan hadiah "${conflict.name}".`,
+          409,
+        );
+      }
+    }
+
     const prize = await prisma.prize.update({
       where: { id: prizeId },
       data: {

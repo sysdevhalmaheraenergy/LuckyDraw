@@ -16,6 +16,7 @@ model User {
   role      Role     @default(ADMIN)
   createdAt DateTime @default(now())
   events    Event[]
+  coupons   Coupon[]
 }
 
 model Event {
@@ -38,6 +39,8 @@ model Coupon {
   status      CouponStatus @default(AVAILABLE)
   eventId     String
   event       Event        @relation(fields: [eventId], references: [id])
+  userId      String?
+  user        User?        @relation(fields: [userId], references: [id])
   drawResults DrawResult[]
 
   @@unique([eventId, number])
@@ -54,6 +57,8 @@ model Prize {
   eventId     String
   drawResults DrawResult[]
   event       Event        @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, drawOrder])
 }
 
 model DrawResult {

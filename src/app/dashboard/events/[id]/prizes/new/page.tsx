@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -16,6 +16,28 @@ export default function NewPrizePage() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [existingOrders, setExistingOrders] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function fetchExistingPrizes() {
+      if (!id) return;
+      try {
+        const res = await fetch(`/api/events/${id}/prizes`);
+        if (res.ok) {
+          const data = await res.json();
+          const orders = data.prizes.map((p: { drawOrder: number }) => p.drawOrder).sort((a: number, b: number) => a - b);
+          setExistingOrders(orders);
+          const nextOrder = orders.length > 0 ? Math.max(...orders) + 1 : 1;
+          setDrawOrder(nextOrder);
+        }
+      } catch {
+        // ignore
+      }
+    }
+    fetchExistingPrizes();
+  }, [id]);
+
+  const duplicateOrder = existingOrders.includes(drawOrder);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -200,6 +222,16 @@ export default function NewPrizePage() {
               <p className="mt-1.5 text-xs text-ink-muted">
                 1 = undian pertama, 2 = undian kedua, dst.
               </p>
+              {duplicateOrder && (
+                <p className="mt-1.5 text-xs text-danger">
+                  Urutan ini sudah digunakan. Pilih nomor lain.
+                </p>
+              )}
+              {existingOrders.length > 0 && (
+                <p className="mt-1.5 text-xs text-ink-muted">
+                  Urutan yang sudah dipakai: {existingOrders.join(", ")}
+                </p>
+              )}
             </div>
 
             {error && (
@@ -210,7 +242,7 @@ export default function NewPrizePage() {
 
             <button
               type="submit"
-              disabled={loading || uploading || !name.trim() || !id}
+              disabled={loading || uploading || !name.trim() || !id || duplicateOrder}
               className="w-full cursor-pointer rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading ? "Menyimpan..." : "Tambah Hadiah"}
