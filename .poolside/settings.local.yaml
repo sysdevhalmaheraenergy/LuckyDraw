@@ -13,3 +13,6 @@ tools:
             - npx tsc *
             - npm run *
             - tail *
+paths:
+    allow:
+        - path: /Users/wafa/Library/Application Support/poolside/plans/**
