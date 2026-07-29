@@ -324,8 +324,9 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
           style={{ transformStyle: "preserve-3d", perspective: 1000 }}
           className="relative"
         >
+          {/* make image bigger */}
           <div
-            className={`w-64 h-40 md:w-80 md:h-48 rounded-2xl flex flex-col items-center justify-center bg-gradient-to-br ${prizeColor}`}
+            className={`w-80 h-64 md:w-[28rem] md:h-72 rounded-2xl flex flex-col items-center justify-center bg-gradient-to-br ${prizeColor}`}
             style={{
               boxShadow:
                 "0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(255,215,0,0.3), inset 0 2px 20px rgba(255,255,255,0.2)",
@@ -336,7 +337,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
               <img
                 src={winningPrize.imageUrl}
                 alt={winningPrize.name}
-                className="mb-2 h-24 w-40 rounded-xl object-cover ring-2 ring-white/20"
+                className="mb-2 h-40 w-64 rounded-xl object-cover ring-2 ring-white/20"
               />
             ) : (
               <div className="text-6xl md:text-7xl mb-2 drop-shadow-lg">

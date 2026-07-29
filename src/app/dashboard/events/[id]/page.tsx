@@ -260,6 +260,14 @@ export default async function EventDetailPage({ params, searchParams }: Context)
                           </span>
                         )}
                       </div>
+                      {validDraw?.note && validDraw.note.trim() && (
+                        <div className="mt-3 rounded-xl bg-surface-alt/50 p-3">
+                          <p className="text-xs font-semibold text-ink-muted">Catatan:</p>
+                          <p className="mt-1 text-sm text-ink whitespace-pre-wrap break-words">
+                            {validDraw.note}
+                          </p>
+                        </div>
+                      )}
                       {event.status === "ONGOING" && prize.status === "PENDING" && (
                         <Link
                           href={`/dashboard/events/${event.id}/draw`}
