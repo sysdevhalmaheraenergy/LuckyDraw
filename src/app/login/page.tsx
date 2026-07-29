@@ -65,7 +65,7 @@ function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@luckydraw.local"
+              placeholder="user@contoh.com"
               className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
@@ -146,6 +146,23 @@ function LoginForm() {
             Daftar di sini
           </Link>
         </p>
+
+        <div className="mt-4 flex items-center gap-2">
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="text-xs text-ink-muted">atau</span>
+          <div className="h-px flex-1 bg-border/50" />
+        </div>
+
+        <Link
+          href="/"
+          className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border border-border/50 bg-white/30 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/50 hover:text-brand"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <path d="M9 12v8h6v-8" />
+          </svg>
+          Kembali ke beranda
+        </Link>
       </div>
     </div>
   );

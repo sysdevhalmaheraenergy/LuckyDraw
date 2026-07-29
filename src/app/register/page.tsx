@@ -202,19 +202,27 @@ export default function RegisterPage() {
 
           <fieldset className="flex flex-col gap-1.5">
             <legend className="text-sm font-medium text-ink">Daftar sebagai</legend>
-            <div className="grid grid-cols-2 gap-2">
-              {roles.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => setRole(r.value)}
-                  aria-pressed={role === r.value}
-                  className={`cursor-pointer rounded-xl border px-3.5 py-2.5 text-left transition-all duration-200 ${
-                    role === r.value
-                      ? "border-brand bg-brand/10"
-                      : "border-border/50 bg-white/30 hover:border-brand/30"
-                  }`}
-                >
+            <div className="grid grid-cols-2 gap-2 mt-1">
+               {roles.map((r) => {
+                 const disabled = r.value === "STAFF";
+                 return (
+                   <button
+                     key={r.value}
+                     type="button"
+                     disabled={disabled}
+                     onClick={() => {
+                       if (disabled) return;
+                       setRole(r.value);
+                     }}
+                     aria-pressed={role === r.value}
+                     className={`rounded-xl border px-3.5 py-2.5 text-left transition-all duration-200 ${
+                       disabled
+                         ? "cursor-not-allowed border-border/30 bg-white/10 opacity-50"
+                         : role === r.value
+                           ? "cursor-pointer border-brand bg-brand/10"
+                           : "cursor-pointer border-border/50 bg-white/30 hover:border-brand/30"
+                     }`}
+                   >
                   <span
                     className={`block text-sm font-semibold ${role === r.value ? "text-brand" : "text-ink"}`}
                   >
@@ -222,7 +230,8 @@ export default function RegisterPage() {
                   </span>
                   <span className="mt-0.5 block text-xs text-ink-muted">{r.desc}</span>
                 </button>
-              ))}
+              )
+            })}
             </div>
           </fieldset>
 
@@ -253,6 +262,23 @@ export default function RegisterPage() {
             Masuk di sini
           </Link>
         </p>
+
+        <div className="mt-4 flex items-center gap-2">
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="text-xs text-ink-muted">atau</span>
+          <div className="h-px flex-1 bg-border/50" />
+        </div>
+
+        <Link
+          href="/"
+          className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border border-border/50 bg-white/30 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/50 hover:text-brand"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <path d="M9 12v8h6v-8" />
+          </svg>
+          Kembali ke beranda
+        </Link>
       </div>
     </div>
   );

@@ -7,7 +7,6 @@ import { BrandMark } from "@/components/brand-mark";
 const navLinks = [
   { href: "#fitur", label: "Fitur" },
   { href: "#cara-kerja", label: "Cara Kerja" },
-  { href: "/api-docs", label: "API Docs" },
 ];
 
 export function SiteHeader() {
