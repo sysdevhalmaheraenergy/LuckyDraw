@@ -13,6 +13,7 @@ pipeline {
 
         // JWT secret for production (use Jenkins credentials in real setup)
         JWT_SECRET = "lJQO5zxqizyegvsO+6rqS6zJ2bq4Hb6s36beV5f5COk="
+        AUTH_SECRET = "dev-only-secret-change-me"
         NEXTAUTH_SECRET = "dev-only-secret-change-me"
 
         // Firebase Admin (image storage for prizes)
@@ -108,6 +109,7 @@ cat > ${env.APP_DIR}/.env << EOF
 APP_NAME=${env.APP_NAME}
 PORT=${env.PORT}
 NEXTAUTH_SECRET="${env.NEXTAUTH_SECRET}"
+AUTH_SECRET="${env.AUTH_SECRET}"
 NEXT_PUBLIC_APP_URL="${env.NEXT_PUBLIC_APP_URL}"
 JWT_SECRET="${env.JWT_SECRET}"
 FIREBASE_PROJECT_ID=${env.FIREBASE_PROJECT_ID}
