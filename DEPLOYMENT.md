@@ -31,7 +31,7 @@ This guide covers deploying the LuckyDraw project to Jenkins with deployment to 
 2. Create or configure a job for **LuckyDraw**
 3. Configure the pipeline:
    - **Branch Specifier**: Set to `*/dev`, `*/uat`, or `*/main`
-   - **Credentials**: Add SSH credential `deploy-server-inventory-staging`
+   - **Credentials**: Add SSH credential `deploy-server-staging`
      - Kind: "SSH Username with private key"
      - Username: `root`
      - Private Key: Paste your private key from `~/.ssh/id_ed25519`
