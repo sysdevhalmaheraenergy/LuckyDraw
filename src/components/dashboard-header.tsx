@@ -86,7 +86,7 @@ function UserDropdown({ user }: { user: User }) {
 
       {open && (
         <div
-          className="absolute right-0 mt-2 w-56 rounded-xl border border-border/50 bg-white/80 p-2 shadow-glass backdrop-blur-xl"
+          className="absolute right-0 mt-2 w-56 rounded-xl border border-border/50 bg-white/95 p-2 shadow-glass backdrop-blur-xl"
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
         >
@@ -95,7 +95,7 @@ function UserDropdown({ user }: { user: User }) {
               {user.name ?? user.email}
             </p>
             {user.role && (
-              <p className="text-xs text-ink-muted">{user.role}</p>
+              <p className="text-xs font-semibold text-ink">{user.role}</p>
             )}
           </div>
           <SignOutButton />

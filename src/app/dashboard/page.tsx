@@ -55,12 +55,6 @@ export default async function DashboardPage() {
               >
                 + Buat Event
               </Link>
-              <Link
-                href="/api-docs"
-                className="cursor-pointer rounded-full border border-border/50 bg-white/30 px-5 py-2.5 text-sm font-semibold text-ink backdrop-blur-xl transition-all duration-200 hover:border-brand/40 hover:text-brand"
-              >
-                API Docs
-              </Link>
             </div>
           </div>
 

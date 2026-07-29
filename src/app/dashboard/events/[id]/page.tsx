@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { couponStatusSchema } from "@/lib/schemas";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { EventStatusToggle } from "@/components/event-status-toggle";
 import { PrizeActions } from "@/components/prize-actions";
 import { Pagination } from "@/components/pagination";
+import { CouponFilterBar } from "@/components/coupon-filter-bar";
 import { CouponExcludeButton } from "./coupon-exclude-button";
 import { CouponRestoreButton } from "./coupon-restore-button";
 
@@ -17,7 +19,7 @@ const DEFAULT_LIMIT = 25;
 
 type Context = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ page?: string; limit?: string }>;
+  searchParams: Promise<{ page?: string; limit?: string; status?: string; search?: string }>;
 };
 
 export default async function EventDetailPage({ params, searchParams }: Context) {
@@ -27,13 +29,38 @@ export default async function EventDetailPage({ params, searchParams }: Context)
   }
 
   const { id } = await params;
-  const { page: pageParam, limit: limitParam } = await searchParams;
+  const { page: pageParam, limit: limitParam, status: statusParam, search: searchParam } = await searchParams;
 
   const page = Math.max(1, Number(pageParam) || DEFAULT_PAGE);
   let limit = Number(limitParam) || DEFAULT_LIMIT;
   if (!PAGE_SIZE_OPTIONS.includes(limit as (typeof PAGE_SIZE_OPTIONS)[number])) {
     limit = DEFAULT_LIMIT;
   }
+
+  // Parse and validate status filter
+  let statusFilter: string | undefined;
+  if (statusParam) {
+    const statusResult = couponStatusSchema.safeParse(statusParam);
+    if (statusResult.success) {
+      statusFilter = statusResult.data;
+    }
+  }
+
+  // Parse search filter (exact coupon number match)
+  let numberFilter: number | undefined;
+  if (searchParam && searchParam.trim() !== "") {
+    const num = Number(searchParam);
+    if (!isNaN(num)) {
+      numberFilter = num;
+    }
+  }
+
+  // Build coupon filter for Prisma
+  const hasFilter = !!statusFilter || numberFilter !== undefined;
+  const couponWhere = {
+    ...(statusFilter && { status: statusFilter as "AVAILABLE" | "WON" | "EXCLUDED" }),
+    ...(numberFilter !== undefined && { number: numberFilter }),
+  };
 
   const event = await prisma.event.findUnique({
     where: { id },
@@ -48,11 +75,17 @@ export default async function EventDetailPage({ params, searchParams }: Context)
         },
       },
       coupons: {
+        where: couponWhere,
         orderBy: { number: "asc" },
         skip: (page - 1) * limit,
         take: limit,
       },
-      _count: { select: { coupons: true, prizes: true } },
+      _count: {
+        select: {
+          coupons: hasFilter ? { where: couponWhere } : true,
+          prizes: true,
+        },
+      },
     },
   });
 
@@ -249,6 +282,8 @@ export default async function EventDetailPage({ params, searchParams }: Context)
               {totalAvailable} tersedia, {totalWon} menang, {totalExcluded} dikecualikan
             </p>
 
+            <CouponFilterBar currentStatus={statusFilter ?? ""} currentSearch={searchParam ?? ""} />
+
             {event.coupons.length === 0 ? (
               <div className="mt-4 rounded-2xl border-2 border-dashed border-border/50 bg-surface/50 p-8 text-center shadow-card backdrop-blur-xl sm:p-12">
                 <div className="mx-auto grid h-14 w-14 place-items-center rounded-xl bg-surface-alt text-brand">
@@ -298,6 +333,10 @@ export default async function EventDetailPage({ params, searchParams }: Context)
               pageSize={limit}
               pageSizeOptions={[10, 25, 50]}
               baseUrl={`/dashboard/events/${event.id}`}
+              extraParams={{
+                ...(statusFilter && { status: statusFilter }),
+                ...(searchParam && { search: searchParam }),
+              }}
             />
           </section>
         </div>

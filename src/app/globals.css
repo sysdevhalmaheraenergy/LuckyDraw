@@ -10,8 +10,8 @@ html {
   --color-ink: #160f2e;
   --color-ink-muted: #5b5470;
   --color-border: #e6e1f5;
-  --color-brand: #7c3aed;
-  --color-brand-2: #4338ca;
+  --color-brand: #dc2626;
+  --color-brand-2: #991b1b;
   --color-accent: #f59e0b;
   --color-success: #10b981;
   --color-danger: #ef4444;
@@ -32,8 +32,8 @@ html {
     --color-ink: #f5f3ff;
     --color-ink-muted: #a79fc4;
     --color-border: rgba(255, 255, 255, 0.09);
-    --color-brand: #a78bfa;
-    --color-brand-2: #818cf8;
+    --color-brand: #f87171;
+    --color-brand-2: #fca5a5;
     --color-accent: #fbbf24;
     --color-success: #34d399;
     --color-danger: #f87171;
