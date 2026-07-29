@@ -13,6 +13,12 @@ tools:
             - npx tsc *
             - npm run *
             - tail *
+            - sort
+            - which psql
+            - which node
+            - node *
+            - psql *
+            - timeout 5 bash *
 paths:
     allow:
         - path: /Users/wafa/Library/Application Support/poolside/plans/**
