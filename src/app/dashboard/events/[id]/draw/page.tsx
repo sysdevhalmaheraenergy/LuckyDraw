@@ -8,7 +8,9 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DrawCannon } from "@/components/draw-cannon";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { Modal } from "@/components/modal";
 import { DrawResultNoteModal } from "@/components/draw-result-note-modal";
+import { DrawResultActions } from "@/components/draw-result-actions";
 import { tableRowVariants, getVariants } from "@/lib/motion";
 
 interface DrawResult {
@@ -52,6 +54,8 @@ export default function DrawPage() {
   const [undoError, setUndoError] = useState("");
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
+  const [viewNoteModalOpen, setViewNoteModalOpen] = useState(false);
+  const [viewNoteContent, setViewNoteContent] = useState("");
   const shouldReduceMotion = useReducedMotion();
   const { container, item } = getVariants(!!shouldReduceMotion);
 
@@ -152,6 +156,11 @@ export default function DrawPage() {
   function openNoteModal(resultId: string) {
     setSelectedResultId(resultId);
     setNoteModalOpen(true);
+  }
+
+  function openViewNoteModal(_resultId: string, note: string) {
+    setViewNoteContent(note);
+    setViewNoteModalOpen(true);
   }
 
   const selectedResult = selectedResultId
@@ -325,7 +334,7 @@ export default function DrawPage() {
                 Hasil Undian
               </motion.h2>
               <motion.div
-                className="overflow-x-auto rounded-2xl border border-border/50 bg-surface/50 shadow-glass backdrop-blur-xl"
+                className="rounded-2xl border border-border/50 bg-surface/50 shadow-glass backdrop-blur-xl"
                 variants={item}
               >
                 <table className="w-full text-left text-sm">
@@ -368,28 +377,18 @@ export default function DrawPage() {
                             {validResult ? new Date(validResult.drawnAt).toLocaleString("id-ID") : "-"}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="flex gap-2">
-                              {validResult && event.status === "ONGOING" && (
-                                <motion.button
-                                  onClick={() => requestUndo(validResult.id)}
-                                  className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-warning transition-colors duration-200 hover:bg-warning/10"
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                >
-                                  Batalkan Pemenang
-                                </motion.button>
-                              )}
-                              {validResult && (
-                                <motion.button
-                                  onClick={() => openNoteModal(validResult.id)}
-                                  className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-brand transition-colors duration-200 hover:bg-brand/10"
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                >
-                                  {validResult.note ? "Edit Catatan" : "Tambah Catatan"}
-                                </motion.button>
-                              )}
-                            </div>
+                            {validResult ? (
+                              <DrawResultActions
+                                resultId={validResult.id}
+                                note={validResult.note}
+                                canUndo={event.status === "ONGOING"}
+                                onUndo={requestUndo}
+                                onEditNote={openNoteModal}
+                                onViewNote={openViewNoteModal}
+                              />
+                            ) : (
+                              "-"
+                            )}
                           </td>
                         </motion.tr>
                       );
@@ -456,13 +455,35 @@ export default function DrawPage() {
           setSelectedResultId(null);
         }}
         resultId={selectedResultId ?? ""}
-         existingNote={selectedResult?.note ?? ""}
-         onSuccess={() => {
+        existingNote={selectedResult?.note ?? ""}
+        onSuccess={() => {
           setNoteModalOpen(false);
           setSelectedResultId(null);
           void fetchEvent();
         }}
       />
+
+      <Modal
+        isOpen={viewNoteModalOpen}
+        onClose={() => setViewNoteModalOpen(false)}
+        title="Lihat Catatan"
+        size="md"
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-ink whitespace-pre-wrap break-words">
+            {viewNoteContent || "(Tidak ada catatan)"}
+          </p>
+        </div>
+        <div className="mt-5 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setViewNoteModalOpen(false)}
+            className="cursor-pointer rounded-lg border border-border/50 bg-white/30 px-4 py-2 text-sm font-semibold text-ink-muted transition-all duration-200 hover:bg-white/50 hover:text-ink"
+          >
+            Tutup
+          </button>
+        </div>
+      </Modal>
     </motion.div>
   );
 }
