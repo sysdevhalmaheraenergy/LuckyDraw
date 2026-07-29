@@ -376,7 +376,7 @@ export default function DrawPage() {
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                 >
-                                  Batalkan
+                                  Batalkan Pemenang
                                 </motion.button>
                               )}
                               {validResult && (
@@ -386,7 +386,7 @@ export default function DrawPage() {
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                 >
-                                  Catatan
+                                  {validResult.note ? "Edit Catatan" : "Tambah Catatan"}
                                 </motion.button>
                               )}
                             </div>
@@ -456,9 +456,8 @@ export default function DrawPage() {
           setSelectedResultId(null);
         }}
         resultId={selectedResultId ?? ""}
-        existingNote={selectedResult?.note ?? ""}
-        existingImageUrl={selectedResult?.imageUrl ?? ""}
-        onSuccess={() => {
+         existingNote={selectedResult?.note ?? ""}
+         onSuccess={() => {
           setNoteModalOpen(false);
           setSelectedResultId(null);
           void fetchEvent();
