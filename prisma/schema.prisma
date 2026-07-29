@@ -68,6 +68,8 @@ model DrawResult {
   status   DrawResultStatus @default(VALID)
   drawnAt  DateTime         @default(now())
   undoneAt DateTime?
+  note     String?
+  imageUrl String?
   coupon   Coupon           @relation(fields: [couponId], references: [id])
   prize    Prize            @relation(fields: [prizeId], references: [id])
 }

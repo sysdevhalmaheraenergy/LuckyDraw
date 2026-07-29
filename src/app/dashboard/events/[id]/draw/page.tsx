@@ -8,7 +8,17 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { StatusBadge } from "@/components/status-badge";
 import { DrawCannon } from "@/components/draw-cannon";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { DrawResultNoteModal } from "@/components/draw-result-note-modal";
 import { tableRowVariants, getVariants } from "@/lib/motion";
+
+interface DrawResult {
+  id: string;
+  status: string;
+  drawnAt: string;
+  note: string | null;
+  imageUrl: string | null;
+  coupon: { number: number };
+}
 
 interface Prize {
   id: string;
@@ -17,12 +27,7 @@ interface Prize {
   drawOrder: number;
   status: string;
   imageUrl: string | null;
-  drawResults: Array<{
-    id: string;
-    status: string;
-    drawnAt: string;
-    coupon: { number: number };
-  }>;
+  drawResults: DrawResult[];
 }
 
 interface EventData {
@@ -45,6 +50,8 @@ export default function DrawPage() {
   const [pendingUndoResultId, setPendingUndoResultId] = useState<string | null>(null);
   const [undoLoading, setUndoLoading] = useState(false);
   const [undoError, setUndoError] = useState("");
+  const [noteModalOpen, setNoteModalOpen] = useState(false);
+  const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const { container, item } = getVariants(!!shouldReduceMotion);
 
@@ -141,6 +148,20 @@ export default function DrawPage() {
       setUndoLoading(false);
     }
   }
+
+  function openNoteModal(resultId: string) {
+    setSelectedResultId(resultId);
+    setNoteModalOpen(true);
+  }
+
+  const selectedResult = selectedResultId
+    ? (() => {
+        const prize = event?.prizes.find((p) =>
+          p.drawResults.some((r) => r.id === selectedResultId),
+        );
+        return prize?.drawResults.find((r) => r.id === selectedResultId);
+      })()
+    : null;
 
   if (loading) {
     return (
@@ -347,7 +368,8 @@ export default function DrawPage() {
                             {validResult ? new Date(validResult.drawnAt).toLocaleString("id-ID") : "-"}
                           </td>
                           <td className="px-4 py-3">
-                            {validResult && event.status === "ONGOING" && (
+                            <div className="flex gap-2">
+                              {validResult && event.status === "ONGOING" && (
                                 <motion.button
                                   onClick={() => requestUndo(validResult.id)}
                                   className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-warning transition-colors duration-200 hover:bg-warning/10"
@@ -356,7 +378,18 @@ export default function DrawPage() {
                                 >
                                   Batalkan
                                 </motion.button>
-                            )}
+                              )}
+                              {validResult && (
+                                <motion.button
+                                  onClick={() => openNoteModal(validResult.id)}
+                                  className="cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold text-brand transition-colors duration-200 hover:bg-brand/10"
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  Catatan
+                                </motion.button>
+                              )}
+                            </div>
                           </td>
                         </motion.tr>
                       );
@@ -414,6 +447,22 @@ export default function DrawPage() {
         loading={undoLoading}
         error={undoError}
         onConfirm={confirmUndo}
+      />
+
+      <DrawResultNoteModal
+        isOpen={noteModalOpen}
+        onClose={() => {
+          setNoteModalOpen(false);
+          setSelectedResultId(null);
+        }}
+        resultId={selectedResultId ?? ""}
+        existingNote={selectedResult?.note ?? ""}
+        existingImageUrl={selectedResult?.imageUrl ?? ""}
+        onSuccess={() => {
+          setNoteModalOpen(false);
+          setSelectedResultId(null);
+          void fetchEvent();
+        }}
       />
     </motion.div>
   );

@@ -22,6 +22,8 @@ tools:
             - npx eslint *
             - xargs *
             - mkdir *
+            - npm ls *
+            - npm ci *
 paths:
     allow:
         - path: /Users/wafa/Library/Application Support/poolside/plans/**
