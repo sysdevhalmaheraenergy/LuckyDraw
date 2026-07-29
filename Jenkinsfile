@@ -7,9 +7,9 @@ pipeline {
     }
 
     environment {
-        HOST = "147.93.107.249"
-        USER = "root"
-        SSH_PORT = "6531"
+        HOST = "185.227.135.32"
+        USER = "sysdev"
+        SSH_PORT = "2212"
 
         // JWT secret for production (use Jenkins credentials in real setup)
         JWT_SECRET = "lJQO5zxqizyegvsO+6rqS6zJ2bq4Hb6s36beV5f5COk="
@@ -42,20 +42,20 @@ pipeline {
                         env.APP_DIR = "/var/www/luckydraw-production"
                         env.APP_NAME = "luckydraw-production"
                         env.PORT = "3039"
-                        env.NEXT_PUBLIC_APP_URL = "http://147.93.107.249:3039"
+                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3039"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_production?schema=public"
                     } else if (branch == 'uat') {
                         env.APP_DIR = "/var/www/luckydraw-uat"
                         env.APP_NAME = "luckydraw-uat"
                         env.PORT = "3029"
-                        env.NEXT_PUBLIC_APP_URL = "http://147.93.107.249:3029"
+                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3029"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_uat?schema=public"
                     } else {
                         // Default to dev/staging
                         env.APP_DIR = "/var/www/luckydraw"
                         env.APP_NAME = "luckydraw"
                         env.PORT = "3019"
-                        env.NEXT_PUBLIC_APP_URL = "http://147.93.107.249:3019"
+                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3019"
 
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_staging?schema=public"
                     }

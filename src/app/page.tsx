@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { BrandMark } from "@/components/brand-mark";
@@ -61,6 +64,15 @@ const steps = [
 ];
 
 export default function Home() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 300);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
       {/* Gradient background */}
@@ -126,7 +138,7 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section className="px-4 py-16 sm:py-20">
+        <section id="fitur" className="px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-6xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
@@ -159,7 +171,7 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section className="px-4 py-16 sm:py-20">
+        <section id="cara-kerja" className="px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-6xl rounded-3xl border border-border/50 bg-white/30 p-6 sm:p-8 md:p-14 backdrop-blur-xl">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
@@ -213,6 +225,19 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Scroll to top */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Kembali ke atas"
+          className="fixed bottom-6 right-6 z-50 grid h-12 w-12 cursor-pointer place-items-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95 animate-fade-in"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+            <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }

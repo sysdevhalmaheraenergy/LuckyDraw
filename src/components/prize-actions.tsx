@@ -67,7 +67,7 @@ export function PrizeActions({ eventId, prizeId, prizeName }: PrizeActionsProps)
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="group relative flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 bg-white/30 text-ink-muted opacity-70 backdrop-blur-xl transition-all duration-200 hover:opacity-100 hover:bg-danger/10 hover:text-danger hover:shadow-lg"
+        className="group relative flex h-8 w-8 items-center justify-center rounded-lg border border-border/50 bg-white/30 text-ink-muted opacity-70 backdrop-blur-xl transition-all duration-200 hover:opacity-100 hover:bg-danger/10 hover:text-danger hover:shadow-lg cursor-pointer"
         title="Hapus hadiah"
       >
         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">

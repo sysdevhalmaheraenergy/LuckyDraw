@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useRef, useEffect } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { SignOutButton } from "@/components/sign-out-button";
 
@@ -39,17 +42,65 @@ export function DashboardHeader({
             </Link>
           )}
           {rightSlot}
-          {showUserInfo && (
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-ink">{displayName}</p>
-              {user?.role && (
-                <p className="text-xs text-ink-muted">{user.role}</p>
-              )}
-            </div>
-          )}
-          {showUserInfo && <SignOutButton />}
+          {showUserInfo && <UserDropdown user={user} />}
         </div>
       </div>
     </header>
+  );
+}
+
+function UserDropdown({ user }: { user: User }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        onMouseEnter={() => setOpen(true)}
+        aria-expanded={open}
+        aria-label="Menu pengguna"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-white/30 text-ink transition-all duration-200 hover:bg-white/40 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+      >
+        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4ZM12 14c-4.41 0-8 2.24-8 5v3h16v-3c0-2.76-3.59-5-8-5Z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 mt-2 w-56 rounded-xl border border-border/50 bg-white/80 p-2 shadow-glass backdrop-blur-xl"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          <div className="px-3 py-2 border-b border-border/50">
+            <p className="text-sm font-semibold text-ink">
+              {user.name ?? user.email}
+            </p>
+            {user.role && (
+              <p className="text-xs text-ink-muted">{user.role}</p>
+            )}
+          </div>
+          <SignOutButton />
+        </div>
+      )}
+    </div>
   );
 }

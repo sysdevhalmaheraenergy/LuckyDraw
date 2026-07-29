@@ -6,8 +6,8 @@
 set -e
 
 # Configuration from environment (set by Jenkinsfile or local .env)
-SERVER="${SERVER:-root@147.93.107.249}"
-SSH_PORT="${SSH_PORT:-6531}"
+SERVER="${SERVER:-sysdev@185.227.135.32}"
+SSH_PORT="${SSH_PORT:-2212}"
 APP_DIR="${APP_DIR:-/var/www/luckydraw}"
 APP_NAME="${APP_NAME:-luckydraw}"
 PORT="${PORT:-3019}"
@@ -88,14 +88,14 @@ ssh -p $SSH_PORT -o StrictHostKeyChecking=no $SERVER "
 # Step 5: Verify deployment
 echo -e "${YELLOW}[5/5] Verifying deployment...${NC}"
 sleep 3
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://147.93.107.249:$PORT || echo "000")
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://185.227.135.32:$PORT || echo "000")
 
 if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "304" ]; then
     echo -e "${GREEN}Deployment successful!${NC}"
-    echo -e "Application is available at: http://147.93.107.249:$PORT"
+    echo -e "Application is available at: http://185.227.135.32:$PORT"
 else
     echo -e "${RED}Warning: Could not verify application is responding (HTTP $HTTP_CODE)${NC}"
-    echo -e "Please check the application manually at: http://147.93.107.249:$PORT"
+    echo -e "Please check the application manually at: http://185.227.135.32:$PORT"
 fi
 
 echo -e "${GREEN}Deployment completed!${NC}"
