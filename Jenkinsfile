@@ -44,12 +44,14 @@ pipeline {
                         env.APP_NAME = "luckydraw-production"
                         env.PORT = "3039"
                         env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3039"
+                        env.AUTH_URL = "http://185.227.135.32:3039"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_production?schema=public"
                     } else if (branch == 'uat') {
                         env.APP_DIR = "/var/www/luckydraw-uat"
                         env.APP_NAME = "luckydraw-uat"
                         env.PORT = "3029"
                         env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3029"
+                        env.AUTH_URL = "http://185.227.135.32:3029"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_uat?schema=public"
                     } else {
                         // Default to dev/staging
@@ -57,6 +59,7 @@ pipeline {
                         env.APP_NAME = "luckydraw"
                         env.PORT = "3019"
                         env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3019"
+                        env.AUTH_URL = "http://185.227.135.32:3019"
 
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_staging?schema=public"
                     }
@@ -110,6 +113,7 @@ APP_NAME=${env.APP_NAME}
 PORT=${env.PORT}
 NEXTAUTH_SECRET="${env.NEXTAUTH_SECRET}"
 AUTH_SECRET="${env.AUTH_SECRET}"
+AUTH_URL="${env.AUTH_URL}"
 NEXT_PUBLIC_APP_URL="${env.NEXT_PUBLIC_APP_URL}"
 JWT_SECRET="${env.JWT_SECRET}"
 FIREBASE_PROJECT_ID=${env.FIREBASE_PROJECT_ID}
