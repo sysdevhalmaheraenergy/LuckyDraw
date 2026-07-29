@@ -69,7 +69,7 @@ pipeline {
             }
 
             steps {
-                sshagent(['deploy-server-inventory-staging']) {
+                sshagent(['deploy-server-staging']) {
                     sh """
                         set -e
 
