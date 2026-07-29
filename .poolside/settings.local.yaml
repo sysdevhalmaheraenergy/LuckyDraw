@@ -19,6 +19,9 @@ tools:
             - node *
             - psql *
             - timeout 5 bash *
+            - npx eslint *
+            - xargs *
+            - mkdir *
 paths:
     allow:
         - path: /Users/wafa/Library/Application Support/poolside/plans/**

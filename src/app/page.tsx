@@ -34,8 +34,8 @@ const features = [
     icon: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 10v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75" />,
   },
   {
-    title: "API-First & Terdokumentasi",
-    desc: "Semua fitur tersedia lewat REST API dengan dokumentasi Swagger interaktif, siap diintegrasikan.",
+    title: "Mudah Digunakan",
+    desc: "Mudah digunakan dan dapat diakses dari laptop, tablet, maupun ponsel.",
     icon: <path d="m8 9-4 3 4 3m8-6 4 3-4 3M13 5l-2 14" />,
   },
 ];

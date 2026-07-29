@@ -26,7 +26,7 @@ const COLORS = [
   "from-brand to-brand-2",
   "from-yellow-400 to-amber-500",
   "from-emerald-500 to-teal-500",
-  "from-purple-500 to-fuchsia-500",
+  "from-red-800 to-rose-800",
 ];
 
 function getPrizeEmoji(prizeName: string, imageUrl: string | null): string {
@@ -94,9 +94,9 @@ function Digit({
     <div
       className="relative w-16 h-24 md:w-20 md:h-28 rounded-xl overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #1a1033 0%, #0a0518 100%)",
+        background: "linear-gradient(90deg,rgba(155, 42, 42, 1) 0%, rgba(232, 45, 28, 1) 50%, rgba(214, 32, 144, 1) 100%)",
         boxShadow:
-          "inset 0 4px 12px rgba(0,0,0,0.6), 0 0 30px rgba(168,85,247,0.4), 0 8px 20px rgba(0,0,0,0.5)",
+          "inset 0 4px 12px rgba(0,0,0,0.6), 0 0 30px rgba(248,113,113,0.4), 0 8px 20px rgba(0,0,0,0.5)",
         border: "2px solid rgba(255,215,0,0.4)",
         transform: "perspective(400px) rotateX(8deg)",
       }}
@@ -272,7 +272,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
       style={{
         background:
-          "radial-gradient(circle at center, rgba(50,10,80,0.95) 0%, rgba(10,5,25,0.98) 100%)",
+          "radial-gradient(circle at center, rgba(80,10,10,0.95) 0%, rgba(25,5,5,0.98) 100%)",
         backdropFilter: isLow ? undefined : "blur(10px)",
       }}
     >
@@ -289,7 +289,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
         style={{
           willChange: "transform",
           background:
-            "conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.08) 20deg, transparent 40deg, transparent 90deg, rgba(168,85,247,0.08) 110deg, transparent 130deg, transparent 180deg, rgba(255,215,0,0.08) 200deg, transparent 220deg, transparent 270deg, rgba(168,85,247,0.08) 290deg, transparent 310deg)",
+            "conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.08) 20deg, transparent 40deg, transparent 90deg, rgba(248,113,113,0.08) 110deg, transparent 130deg, transparent 180deg, rgba(255,215,0,0.08) 200deg, transparent 220deg, transparent 270deg, rgba(248,113,113,0.08) 290deg, transparent 310deg)",
         }}
       />
 
@@ -300,6 +300,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
           className="text-4xl md:text-6xl font-black text-center"
           style={{
             background: "linear-gradient(180deg, #FFD700 0%, #FF6B00 100%)",
+            // background: "linear-gradient(90deg,rgba(155, 42, 42, 1) 0%, rgba(232, 45, 28, 1) 50%, rgba(214, 32, 144, 1) 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             filter: "drop-shadow(0 4px 20px rgba(255,215,0,0.5))",

@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["http://localhost:3000", "http://localhost:3001", "https://hsm-apps.web.app", "https://hsm-apps.firebaseapp.com"],
+    "origin": ["http://185.227.135.32:3019", "http://localhost:3000", "http://localhost:3001", "https://hsm-apps.web.app", "https://hsm-apps.firebaseapp.com"],
     "method": ["GET", "PUT", "POST", "HEAD", "OPTIONS"],
     "responseHeader": ["Content-Type", "x-goog-content-type", "x-goog-meta-custom"],
     "maxAgeSeconds": 3600
