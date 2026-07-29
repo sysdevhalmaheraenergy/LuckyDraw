@@ -1,0 +1,25 @@
+services:
+  luckydraw:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${APP_NAME:-luckydraw}
+    ports:
+      - "${PORT:-3019}:${PORT:-3019}"
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT:-3019}
+      - HOST=0.0.0.0
+      - AUTH_URL=${AUTH_URL}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
+      - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - .env
+    restart: unless-stopped
+    # Note: AUTH_SECRET, NEXTAUTH_SECRET, and AUTH_URL are passed via .env file at runtime
+    # Do not hardcode secrets in docker-compose.yml

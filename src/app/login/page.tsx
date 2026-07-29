@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { BrandMark } from "@/components/brand-mark";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
@@ -40,16 +40,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <Link href="/" className="mb-8">
+    <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-12 sm:py-16">
+      {/* Glass background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+
+      <Link href="/" className="mb-6 sm:mb-8">
         <BrandMark />
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-surface-alt p-8 shadow-xl shadow-brand/5">
+      <div className="w-full max-w-sm rounded-2xl border border-border/50 bg-white/40 p-6 sm:p-8 shadow-glass backdrop-blur-xl">
         <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Selamat datang kembali</h1>
         <p className="mt-1.5 text-sm text-ink-muted">Masuk untuk mengelola event dan undian kamu.</p>
 
-        <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="mt-6 sm:mt-7 flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="text-sm font-medium text-ink">
               Email
@@ -62,8 +65,8 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@luckydraw.local"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+              placeholder="user@contoh.com"
+              className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
 
@@ -83,7 +86,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 pr-11 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 pr-11 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
               />
               <button
                 type="button"
@@ -117,7 +120,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p role="alert" aria-live="polite" className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-500">
+            <p role="alert" aria-live="polite" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {error}
             </p>
           )}
@@ -125,7 +128,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand to-brand-2 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending && (
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -143,7 +146,32 @@ export default function LoginPage() {
             Daftar di sini
           </Link>
         </p>
+
+        <div className="mt-4 flex items-center gap-2">
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="text-xs text-ink-muted">atau</span>
+          <div className="h-px flex-1 bg-border/50" />
+        </div>
+
+        <Link
+          href="/"
+          className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border border-border/50 bg-white/30 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/50 hover:text-brand"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <path d="M9 12v8h6v-8" />
+          </svg>
+          Kembali ke beranda
+        </Link>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -36,8 +36,8 @@ export const createPrizeSchema = z
   .object({
     name: z.string().min(1).openapi({ example: "Hadiah Utama" }),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
-    drawOrder: z.number().int().min(0).openapi({ example: 1 }),
+    imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
+    drawOrder: z.number().int().min(1).openapi({ example: 1 }),
   })
   .openapi("CreatePrizeInput");
 
@@ -86,12 +86,25 @@ export const updateEventSchema = z
   })
   .openapi("UpdateEventInput");
 
+export const claimCouponSchema = z
+  .object({
+    code: z.string().min(1).openapi({ example: "cm8b3..." }),
+  })
+  .openapi("ClaimCouponInput");
+
+export const updateDrawResultNoteSchema = z
+  .object({
+    note: z.string().optional().openapi({ example: "Pemenang sudah klaim hadiah." }),
+    imageUrl: z.string().url().max(2048).optional().openapi({ description: "URL publik permanen dari /api/upload/draw-results." }),
+  })
+  .openapi("UpdateDrawResultNoteInput");
+
 export const updatePrizeSchema = z
   .object({
     name: z.string().min(1).optional(),
     description: z.string().optional(),
-    imageUrl: z.string().url().optional(),
-    drawOrder: z.number().int().min(0).optional(),
+    imageUrl: z.string().url().optional().openapi({ description: "URL publik permanen dari /api/uploads/finalize." }),
+    drawOrder: z.number().int().min(1).optional(),
   })
   .openapi("UpdatePrizeInput");
 
@@ -182,3 +195,19 @@ export const okResponseSchema = z
     ok: z.literal(true),
   })
   .openapi("OkResponse");
+
+export const paginationSchema = z
+  .object({
+    page: z.number().int().min(1).openapi({ example: 1 }),
+    limit: z.number().int().min(1).openapi({ example: 25 }),
+    total: z.number().int().min(0).openapi({ example: 100 }),
+    totalPages: z.number().int().min(1).openapi({ example: 4 }),
+  })
+  .openapi("Pagination");
+
+export const couponsListResponseSchema = z
+  .object({
+    coupons: z.array(couponSchema),
+    pagination: paginationSchema,
+  })
+  .openapi("CouponsListResponse");

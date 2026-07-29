@@ -44,6 +44,16 @@ export async function POST(request: NextRequest, ctx: Context) {
       throw new ApiError("Event tidak ditemukan.", 404);
     }
 
+    const existingPrize = await prisma.prize.findFirst({
+      where: { eventId, drawOrder: body.drawOrder },
+    });
+    if (existingPrize) {
+      throw new ApiError(
+        `Urutan undian ${body.drawOrder} sudah digunakan hadiah "${existingPrize.name}".`,
+        409,
+      );
+    }
+
     const prize = await prisma.prize.create({
       data: {
         eventId,

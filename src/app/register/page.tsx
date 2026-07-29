@@ -20,6 +20,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState<Role>("ADMIN");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -69,16 +71,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <Link href="/" className="mb-8">
+    <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-12 sm:py-16">
+      {/* Glass background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-brand/5 via-transparent to-emerald-500/5" />
+
+      <Link href="/" className="mb-6 sm:mb-8">
         <BrandMark />
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-surface-alt p-8 shadow-xl shadow-brand/5">
+      <div className="w-full max-w-sm rounded-2xl border border-border/50 bg-white/40 p-6 sm:p-8 shadow-glass backdrop-blur-xl">
         <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Buat akun baru</h1>
         <p className="mt-1.5 text-sm text-ink-muted">Mulai kelola event lucky draw kamu sendiri.</p>
 
-        <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4" noValidate>
+        <form onSubmit={handleSubmit} className="mt-6 sm:mt-7 flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="name" className="text-sm font-medium text-ink">
               Nama
@@ -92,7 +97,7 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Budi Santoso"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
 
@@ -109,7 +114,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="kamu@company.com"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
             />
           </div>
 
@@ -117,53 +122,107 @@ export default function RegisterPage() {
             <label htmlFor="password" className="text-sm font-medium text-ink">
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimal 8 karakter"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimal 8 karakter"
+                className="w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-ink-muted hover:text-ink transition-colors duration-200"
+                tabIndex={-1}
+                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+              >
+                {showPassword ? (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                  </svg>
+                ) : (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="confirmPassword" className="text-sm font-medium text-ink">
               Konfirmasi Password
             </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={8}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Ulangi password"
-              className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-colors duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20"
-            />
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                required
+                minLength={8}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Ulangi password"
+                className="w-full rounded-xl border border-border/50 bg-white/50 px-4 py-2.5 pr-10 text-sm text-ink placeholder:text-ink-muted/60 outline-none transition-all duration-200 focus:border-brand focus:ring-2 focus:ring-brand/20 backdrop-blur-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-ink-muted hover:text-ink transition-colors duration-200"
+                tabIndex={-1}
+                aria-label={showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"}
+              >
+                {showConfirmPassword ? (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                  </svg>
+                ) : (
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           <fieldset className="flex flex-col gap-1.5">
             <legend className="text-sm font-medium text-ink">Daftar sebagai</legend>
-            <div className="grid grid-cols-2 gap-2">
-              {roles.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => setRole(r.value)}
-                  aria-pressed={role === r.value}
-                  className={`cursor-pointer rounded-xl border px-3.5 py-2.5 text-left transition-colors duration-200 ${
-                    role === r.value
-                      ? "border-brand bg-brand/10"
-                      : "border-border bg-surface hover:border-brand/30"
-                  }`}
-                >
+            <div className="grid grid-cols-2 gap-2 mt-1">
+               {roles.map((r) => {
+                 const disabled = r.value === "STAFF";
+                 return (
+                   <button
+                     key={r.value}
+                     type="button"
+                     disabled={disabled}
+                     onClick={() => {
+                       if (disabled) return;
+                       setRole(r.value);
+                     }}
+                     aria-pressed={role === r.value}
+                     className={`rounded-xl border px-3.5 py-2.5 text-left transition-all duration-200 ${
+                       disabled
+                         ? "cursor-not-allowed border-border/30 bg-white/10 opacity-50"
+                         : role === r.value
+                           ? "cursor-pointer border-brand bg-brand/10"
+                           : "cursor-pointer border-border/50 bg-white/30 hover:border-brand/30"
+                     }`}
+                   >
                   <span
                     className={`block text-sm font-semibold ${role === r.value ? "text-brand" : "text-ink"}`}
                   >
@@ -171,12 +230,13 @@ export default function RegisterPage() {
                   </span>
                   <span className="mt-0.5 block text-xs text-ink-muted">{r.desc}</span>
                 </button>
-              ))}
+              )
+            })}
             </div>
           </fieldset>
 
           {error && (
-            <p role="alert" aria-live="polite" className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-500">
+            <p role="alert" aria-live="polite" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {error}
             </p>
           )}
@@ -184,7 +244,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-opacity duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand to-brand-2 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-all duration-200 hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending && (
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -202,6 +262,23 @@ export default function RegisterPage() {
             Masuk di sini
           </Link>
         </p>
+
+        <div className="mt-4 flex items-center gap-2">
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="text-xs text-ink-muted">atau</span>
+          <div className="h-px flex-1 bg-border/50" />
+        </div>
+
+        <Link
+          href="/"
+          className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border border-border/50 bg-white/30 px-4 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/50 hover:text-brand"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <path d="M9 12v8h6v-8" />
+          </svg>
+          Kembali ke beranda
+        </Link>
       </div>
     </div>
   );

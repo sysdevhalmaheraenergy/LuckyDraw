@@ -18,10 +18,12 @@ import {
   okResponseSchema,
   registerSchema,
   userSchema,
+  claimCouponSchema,
   presignUploadSchema,
   presignUploadResponseSchema,
   finalizeUploadSchema,
   finalizeUploadResponseSchema,
+  couponsListResponseSchema,
 } from "@/lib/schemas";
 
 export const registry = new OpenAPIRegistry();
@@ -288,14 +290,18 @@ registry.registerPath({
   method: "get",
   path: "/api/events/{eventId}/coupons",
   tags: ["Coupons"],
-  summary: "List semua kupon pada sebuah event, bisa difilter lewat query ?status=",
+  summary: "List kupon pada sebuah event dengan pagination, bisa difilter lewat query ?status=",
   security,
   request: {
     params: z.object({ eventId: z.string() }),
-    query: z.object({ status: couponSchema.shape.status.optional() }),
+    query: z.object({
+      status: couponSchema.shape.status.optional(),
+      page: z.number().int().min(1).optional().openapi({ example: 1 }),
+      limit: z.number().int().min(1).optional().openapi({ example: 25 }),
+    }),
   },
   responses: {
-    200: { description: "Daftar kupon.", ...jsonContent(z.object({ coupons: z.array(couponSchema) })) },
+    200: { description: "Daftar kupon dengan metadata pagination.", ...jsonContent(couponsListResponseSchema) },
     400: badRequest,
     401: unauthorized,
     404: notFound,
@@ -319,6 +325,22 @@ registry.registerPath({
 });
 
 registry.registerPath({
+  method: "patch",
+  path: "/api/events/{eventId}/coupons/{number}/restore",
+  tags: ["Coupons"],
+  summary: "Pulihkan kupon yang dikecualikan kembali ke status tersedia agar bisa diundi lagi",
+  security,
+  request: { params: z.object({ eventId: z.string(), number: z.string() }) },
+  responses: {
+    200: { description: "Kupon berhasil dipulihkan.", ...jsonContent(z.object({ coupon: couponSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+    404: notFound,
+  },
+});
+
+registry.registerPath({
   method: "post",
   path: "/api/events/{eventId}/prizes/{prizeId}/draw",
   tags: ["Draw"],
@@ -332,6 +354,32 @@ registry.registerPath({
     403: forbidden,
     404: notFound,
     409: { description: "Race condition saat memilih kupon, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/coupons/claim",
+  tags: ["Coupons"],
+  summary: "Klaim kupon dengan kode unik (user yang sedang login menjadi pemilik kupon)",
+  security,
+  request: { body: jsonContent(claimCouponSchema) },
+  responses: {
+    200: { description: "Kupon berhasil diklaim.", ...jsonContent(z.object({ coupon: couponSchema, event: eventSchema })) },
+    400: badRequest,
+    401: unauthorized,
+    404: notFound,
+    409: { description: "Race condition, coba lagi.", ...jsonContent(errorResponseSchema) },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/api/events/public",
+  tags: ["Events"],
+  summary: "List event publik (hanya yang berstatus ONGOING atau COMPLETED)",
+  responses: {
+    200: { description: "Daftar event publik.", ...jsonContent(z.object({ events: z.array(eventListItemSchema) })) },
   },
 });
 

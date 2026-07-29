@@ -1,0 +1,29 @@
+tools:
+    shell:
+        allow:
+            - find *
+            - head *
+            - ls *
+            - cat *
+            - curl *
+            - echo *
+            - ssh *
+            - grep *
+            - cd *
+            - npx tsc *
+            - npm run *
+            - tail *
+            - sort
+            - which psql
+            - which node
+            - node *
+            - psql *
+            - timeout 5 bash *
+            - npx eslint *
+            - xargs *
+            - mkdir *
+            - npm ls *
+            - npm ci *
+paths:
+    allow:
+        - path: /Users/wafa/Library/Application Support/poolside/plans/**
