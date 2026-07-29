@@ -3,25 +3,29 @@
 ## Overview
 This guide covers deploying the LuckyDraw project to Jenkins with deployment to the staging server at `http://185.227.135.32`.
 
-## Ports by Branch
+## Server Architecture
 
-| Branch | Port | URL |
-|--------|------|-----|
-| `dev` | 3019 | http://185.227.135.32:3019 |
-| `uat` | 3029 | http://185.227.135.32:3029 |
-| `main` | 3039 | http://185.227.135.32:3039 |
+| Environment | Branch | Server | SSH Port | App Port | App URL |
+|------------|--------|--------|----------|----------|---------|
+| **Staging** | `dev` | 185.227.135.32 (sysdev) | 2212 | 3019 | http://185.227.135.32:3019 |
+| **UAT** | `uat` | 185.227.135.32 (sysdev) | 2212 | 3029 | http://185.227.135.32:3029 |
+| **Production** | `main` | 147.93.107.249 (root) | 6531 | 3039 | http://147.93.107.249:3039 |
 
 ## Prerequisites
 
 ### Server Requirements
-- SSH access to `185.227.135.32` (port 2212)
-- Docker and Docker Compose installed on server
+- **Staging (`dev`/`uat`)**: SSH access to `185.227.135.32` (port 2212), user `sysdev`
+- **Production (`main`)**: SSH access to `147.93.107.249` (port 6531), user `root`
+- Docker and Docker Compose installed on both servers
 - nginx (optional, for reverse proxy)
 
 ### Jenkins Requirements
 - Jenkins installed at `http://185.227.135.32:8080/`
 - Git plugin installed
 - SSH Agent plugin installed
+- **Two SSH credentials** must be configured:
+  - `deploy-server-staging` — for staging/uat (`185.227.135.32`)
+  - `deploy-server-inventory-staging` — for production (`147.93.107.249`)
 
 ## Configuration
 
@@ -75,11 +79,12 @@ The repository URL is: `git@github.com:sysdevhalmaheraenergy/luckydraw.git`
 
 ### 2. Environment Variables
 
-| Variable | Dev Value | Prod Value | Description |
-|----------|-----------|------------|-------------|
-| NEXT_PUBLIC_APP_URL | http://185.227.135.32:3019 | http://185.227.135.32:3039 | Frontend URL |
-| JWT_SECRET | (see .env) | (see .env) | JWT signing secret |
-| NEXTAUTH_SECRET | (see .env) | (see .env) | NextAuth secret |
+| Variable | Dev Value | UAT Value | Prod Value | Description |
+|----------|-----------|-----------|------------|-------------|
+| NEXT_PUBLIC_APP_URL | http://185.227.135.32:3019 | http://185.227.135.32:3029 | http://147.93.107.249:3039 | Frontend URL |
+| AUTH_URL | http://185.227.135.32:3019 | http://185.227.135.32:3029 | http://147.93.107.249:3039 | Auth callback URL |
+| JWT_SECRET | (see .env) | (see .env) | (see .env) | JWT signing secret |
+| NEXTAUTH_SECRET | (see .env) | (see .env) | (see .env) | NextAuth secret |
 
 ### 3. Server Setup
 
@@ -112,7 +117,9 @@ chmod +x deploy.sh
        ↓
 2. Jenkins triggers build
        ↓
-3. SSH to server (185.227.135.32:2212)
+3. SSH to appropriate server:
+   - dev/uat  → 185.227.135.32:2212 (sysdev)
+   - main     → 147.93.107.249:6531 (root)
        ↓
 4. rsync source code to server
        ↓
@@ -129,27 +136,48 @@ chmod +x deploy.sh
 
 ### Check if application is running
 ```bash
-ssh -p 2212 root@185.227.135.32
+# Staging/UAT
+ssh -p 2212 sysdev@185.227.135.32
 docker ps | grep luckydraw
+
+# Production
+ssh -p 6531 root@147.93.107.249
+docker ps | grep luckydraw-production
 ```
 
 ### View Docker logs
 ```bash
-ssh -p 2212 root@185.227.135.32
+# Staging/UAT
+ssh -p 2212 sysdev@185.227.135.32
 docker logs luckydraw
+
+# Production
+ssh -p 6531 root@147.93.107.249
+docker logs luckydraw-production
 ```
 
 ### Restart application
 ```bash
-ssh -p 2212 root@185.227.135.32
+# Staging
+ssh -p 2212 sysdev@185.227.135.32
 cd /var/www/luckydraw
+docker compose down && docker compose up -d
+
+# Production
+ssh -p 6531 root@147.93.107.249
+cd /var/www/luckydraw-production
 docker compose down && docker compose up -d
 ```
 
 ### Check port availability
 ```bash
-ssh -p 2212 root@185.227.135.32
-lsof -ti:3019 || lsof -ti:3029 || lsof -ti:3039
+# Staging/UAT
+ssh -p 2212 sysdev@185.227.135.32
+lsof -ti:3019 || lsof -ti:3029
+
+# Production
+ssh -p 6531 root@147.93.107.249
+lsof -ti:3039
 ```
 
 ## Security Notes

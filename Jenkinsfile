@@ -7,9 +7,11 @@ pipeline {
     }
 
     environment {
+        // These are defaults; overridden per branch in 'Set Environment' stage
         HOST = "185.227.135.32"
         USER = "sysdev"
         SSH_PORT = "2212"
+        SSH_CREDENTIAL = "deploy-server-staging"
 
         // JWT secret for production (use Jenkins credentials in real setup)
         JWT_SECRET = "lJQO5zxqizyegvsO+6rqS6zJ2bq4Hb6s36beV5f5COk="
@@ -40,11 +42,15 @@ pipeline {
                     echo "Detected branch: ${branch}"
 
                     if (branch == 'main') {
+                        env.HOST = "147.93.107.249"
+                        env.USER = "root"
+                        env.SSH_PORT = "6531"
+                        env.SSH_CREDENTIAL = "deploy-server-inventory-staging"
                         env.APP_DIR = "/var/www/luckydraw-production"
                         env.APP_NAME = "luckydraw-production"
                         env.PORT = "3039"
-                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3039"
-                        env.AUTH_URL = "http://185.227.135.32:3039"
+                        env.NEXT_PUBLIC_APP_URL = "http://147.93.107.249:3039"
+                        env.AUTH_URL = "http://147.93.107.249:3039"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_production?schema=public"
                     } else if (branch == 'uat') {
                         env.APP_DIR = "/var/www/luckydraw-uat"
@@ -60,7 +66,6 @@ pipeline {
                         env.PORT = "3019"
                         env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3019"
                         env.AUTH_URL = "http://185.227.135.32:3019"
-
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_staging?schema=public"
                     }
                 }
@@ -73,7 +78,7 @@ pipeline {
             }
 
             steps {
-                sshagent(['deploy-server-staging']) {
+                sshagent([env.SSH_CREDENTIAL]) {
                     sh """
                         set -e
 
