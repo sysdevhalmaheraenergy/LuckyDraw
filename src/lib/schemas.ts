@@ -92,6 +92,13 @@ export const claimCouponSchema = z
   })
   .openapi("ClaimCouponInput");
 
+export const updateDrawResultNoteSchema = z
+  .object({
+    note: z.string().optional().openapi({ example: "Pemenang sudah klaim hadiah." }),
+    imageUrl: z.string().url().max(2048).optional().openapi({ description: "URL publik permanen dari /api/upload/draw-results." }),
+  })
+  .openapi("UpdateDrawResultNoteInput");
+
 export const updatePrizeSchema = z
   .object({
     name: z.string().min(1).optional(),
