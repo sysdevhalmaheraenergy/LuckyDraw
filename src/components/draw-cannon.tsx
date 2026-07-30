@@ -92,7 +92,7 @@ function Digit({
 
   return (
     <div
-      className="relative w-16 h-24 md:w-20 md:h-28 rounded-xl overflow-hidden"
+      className="relative w-12 h-20 sm:w-16 sm:h-24 md:w-20 md:h-28 rounded-lg sm:rounded-xl overflow-hidden"
       style={{
         background: "linear-gradient(90deg,rgba(155, 42, 42, 1) 0%, rgba(232, 45, 28, 1) 50%, rgba(214, 32, 144, 1) 100%)",
         boxShadow:
@@ -109,7 +109,7 @@ function Digit({
           animate={{ y: 0, opacity: 1, rotateX: 0 }}
           exit={{ y: 60, opacity: 0, rotateX: 90 }}
           transition={{ duration: 0.15 }}
-          className="absolute inset-0 flex items-center justify-center text-5xl md:text-6xl font-black"
+          className="absolute inset-0 flex items-center justify-center text-3xl sm:text-5xl md:text-6xl font-black"
           style={{
             background: "linear-gradient(180deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)",
             WebkitBackgroundClip: "text",
@@ -293,11 +293,11 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
         }}
       />
 
-      <div className="relative z-10 flex flex-col items-center gap-8 px-6">
+      <div className="relative z-10 flex flex-col items-center justify-center h-screen w-full gap-4 md:gap-6 px-4 md:px-6">
         <motion.h2
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-4xl md:text-6xl font-black text-center"
+          className="text-3xl sm:text-4xl md:text-5xl font-black text-center shrink-0"
           style={{
             background: "linear-gradient(180deg, #FFD700 0%, #FF6B00 100%)",
             // background: "linear-gradient(90deg,rgba(155, 42, 42, 1) 0%, rgba(232, 45, 28, 1) 50%, rgba(214, 32, 144, 1) 100%)",
@@ -326,31 +326,41 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
         >
           {/* make image bigger */}
           <div
-            className={`w-80 h-64 md:w-[28rem] md:h-72 rounded-2xl flex flex-col items-center justify-center bg-gradient-to-br ${prizeColor}`}
+            className={`w-full max-w-xs sm:max-w-sm md:max-w-xl rounded-2xl sm:rounded-3xl flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5 bg-linear-to-br ${prizeColor} overflow-hidden shrink-0`}
             style={{
               boxShadow:
                 "0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(255,215,0,0.3), inset 0 2px 20px rgba(255,255,255,0.2)",
               border: "3px solid rgba(255,215,0,0.6)",
+              padding: "20px 16px 24px",
             }}
           >
             {winningPrize.imageUrl ? (
-              <img
-                src={winningPrize.imageUrl}
-                alt={winningPrize.name}
-                className="mb-2 h-40 w-64 rounded-xl object-cover ring-2 ring-white/20"
-              />
+              <div className="flex items-center justify-center w-full flex-1 min-h-32">
+                <img
+                  src={winningPrize.imageUrl}
+                  alt={winningPrize.name}
+                  className="h-auto w-auto max-h-40 sm:max-h-48 md:max-h-72 max-w-full rounded-lg sm:rounded-2xl object-contain"
+                  style={{
+                    filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.3))",
+                  }}
+                />
+              </div>
             ) : (
-              <div className="text-6xl md:text-7xl mb-2 drop-shadow-lg">
+              <div className="text-5xl sm:text-6xl md:text-8xl drop-shadow-lg flex-1 flex items-center justify-center">
                 {prizeEmoji}
               </div>
             )}
-            <div className="text-white font-black text-xl md:text-2xl tracking-wide drop-shadow-lg">
+            <div className="text-white font-black text-sm sm:text-lg md:text-2xl tracking-wide text-center px-2 w-full line-clamp-2"
+              style={{
+                textShadow: "0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2)",
+              }}
+            >
               {winningPrize.name}
             </div>
           </div>
         </motion.div>
 
-        <div className="flex gap-2 md:gap-3">
+        <div className="flex gap-1 sm:gap-2 md:gap-3 shrink-0">
           {winningNumber.map((_, i) => (
             <Digit
               key={i}
@@ -369,15 +379,15 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-col items-center gap-4"
+            className="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 shrink-0"
           >
-            <p className="text-white/80 text-lg">
+            <p className="text-white/80 text-xs sm:text-sm md:text-lg text-center px-2">
               Selamat! Nomor pemenang telah ditentukan
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={close}
-                className="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-brand to-brand-2 shadow-lg shadow-brand/30 hover:scale-105 transition-transform"
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold text-white text-sm sm:text-base bg-linear-to-r from-brand to-brand-2 shadow-lg shadow-brand/30 hover:scale-105 transition-transform"
               >
                 Tutup
               </button>

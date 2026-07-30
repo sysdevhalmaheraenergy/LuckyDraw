@@ -248,7 +248,7 @@ export default async function EventDetailPage({ params, searchParams }: Context)
                           <img
                             src={prize.imageUrl}
                             alt={prize.name}
-                            className="h-32 w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                            className="h-48 w-full object-contain transition-transform duration-200 group-hover:scale-105"
                           />
                         </div>
                       )}
