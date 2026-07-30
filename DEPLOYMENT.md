@@ -20,24 +20,36 @@ This guide covers deploying the LuckyDraw project to Jenkins with deployment to 
 - nginx (optional, for reverse proxy)
 
 ### Jenkins Requirements
-- Jenkins installed at `http://185.227.135.32:8080/`
+
+There are **two separate Jenkins instances**:
+
+| Jenkins | URL | Branches | SSH Credential |
+|---------|-----|----------|----------------|
+| **Staging** | `http://185.227.135.32:8080/` | `dev`, `uat` | `deploy-server-staging` |
+| **Production** | (separate Jenkins) | `main` | `deploy-server-production` |
+
+Both Jenkins instances require:
 - Git plugin installed
 - SSH Agent plugin installed
-- **Two SSH credentials** must be configured:
+- **SSH credentials** (configured per instance):
   - `deploy-server-staging` — for staging/uat (`185.227.135.32`)
-  - `deploy-server-inventory-staging` — for production (`147.93.107.249`)
-
-## Configuration
+  - `deploy-server-production` — for production (`147.93.107.249`)
+- **Secret text credentials** (required on BOTH instances for `withCredentials`):
+  - `jwt-secret` — JWT signing secret
+  - `auth-secret` — NextAuth AUTH_SECRET
+  - `nextauth-secret` — NextAuth NEXTAUTH_SECRET
+  - `firebase-client-email` — Firebase service account email
+  - `firebase-private-key` — Firebase service account private key
 
 ### 1. Jenkins Pipeline Setup
 
-1. Open Jenkins at http://185.227.135.32:8080/
+1. Open Jenkins at http://185.227.135.32:8080/ (staging) or the production Jenkins URL
 2. Create or configure a job for **LuckyDraw**
 3. Configure the pipeline:
    - **Branch Specifier**: Set to `*/dev`, `*/uat`, or `*/main`
-   - **Credentials**: Add SSH credential `deploy-server-staging`
+   - **Credentials**: Add SSH credential (`deploy-server-staging` or `deploy-server-production`)
      - Kind: "SSH Username with private key"
-     - Username: `root`
+     - Username: `sysdev` (staging) or `root` (production)
      - Private Key: Paste your private key from `~/.ssh/id_ed25519`
    - **Build Triggers**:
      - Check "GitHub hook trigger for GITScm polling"
@@ -45,7 +57,7 @@ This guide covers deploying the LuckyDraw project to Jenkins with deployment to 
 
 ### SSH Access Setup
 
-The repository URL is: `git@github.com:sysdevhalmaheraenergy/luckydraw.git`
+The repository URL is: `git@github.com:sysdevhalmaheraenergy/LuckyDraw.git`
 
 **Run these commands on your LOCAL COMPUTER terminal**:
 
@@ -183,6 +195,7 @@ lsof -ti:3039
 ## Security Notes
 
 1. The Jenkinsfile uses SSH key-based authentication
-2. JWT_SECRET and NEXTAUTH_SECRET are stored in Jenkinsfile/.env (consider using Jenkins credentials in production)
+2. Secrets (JWT_SECRET, AUTH_SECRET, NEXTAUTH_SECRET, Firebase credentials) are injected via Jenkins `withCredentials` — they are NOT stored in the Jenkinsfile or `.env` file
 3. Never commit `.env.local` to version control
-4. Firebase private key is stored in Jenkinsfile (consider using Jenkins credentials in production)
+4. Configure all 5 secret credentials on BOTH Jenkins instances (staging and production)
+5. The `.dockerignore` file prevents `.env` and other sensitive files from being included in Docker builds
