@@ -1,0 +1,13 @@
+node_modules
+.git
+.next
+.gitignore
+Dockerfile
+docker-compose.yml
+Jenkinsfile
+deploy.sh
+*.log
+coverage
+.env
+.env.local
+.env.*.local
