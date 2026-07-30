@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
 import { handleApiError, ApiError } from "@/lib/api-utils";
-import { bucket } from "@/lib/firebase-admin";
+import { getBucket } from "@/lib/firebase-admin";
 import { finalizeUploadSchema } from "@/lib/schemas";
 
 const UPLOAD_PREFIX = "lucky-draw/prizes/";
@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       throw new ApiError("Path upload tidak valid.", 400);
     }
 
+    const bucket = getBucket();
     const file = bucket.file(body.path);
     const [exists] = await file.exists();
     if (!exists) {
