@@ -39,6 +39,13 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
+# Copy Prisma CLI and dependencies for running migrations at startup
+COPY --from=builder /app/node_modules/.bin/prisma /app/node_modules/.bin/prisma
+COPY --from=builder /app/node_modules/prisma /app/node_modules/prisma
+COPY --from=builder /app/node_modules/@prisma /app/node_modules/@prisma
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
 USER nextjs
 
 EXPOSE 3039
