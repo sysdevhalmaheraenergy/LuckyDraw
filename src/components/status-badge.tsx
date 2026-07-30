@@ -3,7 +3,7 @@ const styles: Record<string, string> = {
   ONGOING: "bg-accent/15 text-accent",
   COMPLETED: "bg-emerald-500/15 text-emerald-500",
   AVAILABLE: "bg-emerald-500/15 text-emerald-500",
-  WON: "bg-brand/15 text-brand",
+  WON: "bg-emerald-500/15 text-emerald-500",
   EXCLUDED: "bg-danger/15 text-danger",
   PENDING: "bg-warning/15 text-warning",
   DRAWN: "bg-brand/15 text-brand",
