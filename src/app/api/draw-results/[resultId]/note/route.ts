@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
 import { handleApiError, ApiError } from "@/lib/api-utils";
 import { updateDrawResultNoteSchema } from "@/lib/schemas";
-import { bucket } from "@/lib/firebase-admin";
+import { getBucket } from "@/lib/firebase-admin";
 
 type Context = { params: Promise<{ resultId: string }> };
 
@@ -80,6 +80,7 @@ export async function PUT(request: NextRequest, ctx: Context) {
       const path = `${uploadPrefix}/${user.id}/${Date.now()}-${safeFileName}`;
 
       const arrayBuffer = await file.arrayBuffer();
+      const bucket = getBucket();
       const fileRef = bucket.file(path);
       await fileRef.save(Buffer.from(arrayBuffer), {
         metadata: { contentType: file.type },

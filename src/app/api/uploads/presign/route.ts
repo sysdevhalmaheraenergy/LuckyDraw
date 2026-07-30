@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
 import { handleApiError } from "@/lib/api-utils";
-import { bucket } from "@/lib/firebase-admin";
+import { getBucket } from "@/lib/firebase-admin";
 import { presignUploadSchema } from "@/lib/schemas";
 
 const UPLOAD_PREFIX = "lucky-draw/prizes";
@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     const safeFileName = body.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${UPLOAD_PREFIX}/${user.id}/${Date.now()}-${safeFileName}`;
 
+    const bucket = getBucket();
     const [uploadUrl] = await bucket.file(path).getSignedUrl({
       version: "v4",
       action: "write",
