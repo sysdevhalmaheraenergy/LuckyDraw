@@ -1,15 +1,15 @@
 # Deployment Guide for LuckyDraw
 
 ## Overview
-This guide covers deploying the LuckyDraw project to Jenkins with deployment to the staging server at `http://185.227.135.32`.
+This guide covers deploying the LuckyDraw project via Jenkins CI/CD pipeline.
 
 ## Server Architecture
 
-| Environment | Branch | Server | SSH Port | App Port | App URL |
-|------------|--------|--------|----------|----------|---------|
-| **Staging** | `dev` | 185.227.135.32 (sysdev) | 2212 | 3019 | http://185.227.135.32:3019 |
-| **UAT** | `uat` | 185.227.135.32 (sysdev) | 2212 | 3029 | http://185.227.135.32:3029 |
-| **Production** | `main` | 147.93.107.249 (root) | 6531 | 3039 | http://147.93.107.249:3039 |
+| Environment | Branch | Server | SSH User | SSH Port | App Port | App URL |
+|------------|--------|--------|----------|----------|----------|---------|
+| **Staging** | `dev` | 185.227.135.32 | sysdev | 2212 | 3019 | http://185.227.135.32:3019 |
+| **UAT** | `uat` | 185.227.135.32 | sysdev | 2212 | 3029 | http://185.227.135.32:3029 |
+| **Production** | `main` | 147.93.107.249 | root | 6531 | 3039 | http://147.93.107.249:3039 |
 
 ## Prerequisites
 
@@ -17,7 +17,8 @@ This guide covers deploying the LuckyDraw project to Jenkins with deployment to 
 - **Staging (`dev`/`uat`)**: SSH access to `185.227.135.32` (port 2212), user `sysdev`
 - **Production (`main`)**: SSH access to `147.93.107.249` (port 6531), user `root`
 - Docker and Docker Compose installed on both servers
-- nginx (optional, for reverse proxy)
+- SSH key from Jenkins credential `deploy-server-staging` must be authorized on staging server
+- SSH key from Jenkins credential `deploy-server-inventory-staging` must be authorized on production server
 
 ### Jenkins Requirements
 
@@ -26,14 +27,14 @@ There are **two separate Jenkins instances**:
 | Jenkins | URL | Branches | SSH Credential |
 |---------|-----|----------|----------------|
 | **Staging** | `http://185.227.135.32:8080/` | `dev`, `uat` | `deploy-server-staging` |
-| **Production** | (separate Jenkins) | `main` | `deploy-server-production` |
+| **Production** | (separate Jenkins) | `main` | `deploy-server-inventory-staging` |
 
 Both Jenkins instances require:
 - Git plugin installed
 - SSH Agent plugin installed
 - **SSH credentials** (configured per instance):
   - `deploy-server-staging` — for staging/uat (`185.227.135.32`)
-  - `deploy-server-production` — for production (`147.93.107.249`)
+  - `deploy-server-inventory-staging` — for production (`147.93.107.249`)
 - **Secret text credentials** (required on BOTH instances for `withCredentials`):
   - `jwt-secret` — JWT signing secret
   - `auth-secret` — NextAuth AUTH_SECRET
@@ -47,7 +48,7 @@ Both Jenkins instances require:
 2. Create or configure a job for **LuckyDraw**
 3. Configure the pipeline:
    - **Branch Specifier**: Set to `*/dev`, `*/uat`, or `*/main`
-   - **Credentials**: Add SSH credential (`deploy-server-staging` or `deploy-server-production`)
+   - **Credentials**: Add SSH credential (`deploy-server-staging` or `deploy-server-inventory-staging`)
      - Kind: "SSH Username with private key"
      - Username: `sysdev` (staging) or `root` (production)
      - Private Key: Paste your private key from `~/.ssh/id_ed25519`
@@ -133,13 +134,13 @@ chmod +x deploy.sh
    - dev/uat  → 185.227.135.32:2212 (sysdev)
    - main     → 147.93.107.249:6531 (root)
        ↓
-4. rsync source code to server
+4. tar source code and pipe via SSH to server
        ↓
 5. Create .env with environment variables
        ↓
 6. docker compose up -d --build
        ↓
-7. Health check via curl
+7. Health check via docker inspect
        ↓
 8. Application available on branch port
 ```
@@ -194,7 +195,7 @@ lsof -ti:3039
 
 ## Security Notes
 
-1. The Jenkinsfile uses SSH key-based authentication
+1. The Jenkinsfile uses SSH key-based authentication via `sshagent` and `-i ~/.ssh/id_ed25519`
 2. Secrets (JWT_SECRET, AUTH_SECRET, NEXTAUTH_SECRET, Firebase credentials) are injected via Jenkins `withCredentials` — they are NOT stored in the Jenkinsfile or `.env` file
 3. Never commit `.env.local` to version control
 4. Configure all 5 secret credentials on BOTH Jenkins instances (staging and production)
