@@ -306,7 +306,7 @@ export default function DrawPage() {
                       <img
                         src={prize.imageUrl}
                         alt={prize.name}
-                        className="mb-4 h-32 w-full rounded-xl object-cover ring-1 ring-border/50"
+                        className="mb-4 h-48 w-full rounded-xl object-contain ring-1 ring-border/50"
                       />
                     )}
                     <motion.button

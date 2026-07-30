@@ -107,7 +107,7 @@ export default async function PublicEventDetailPage({ params }: Context) {
                         <img
                           src={prize.imageUrl}
                           alt={prize.name}
-                          className="mb-3 h-32 w-full rounded-xl object-cover"
+                          className="mb-3 h-48 w-full rounded-xl object-contain"
                         />
                       )}
                       <h3 className="font-display text-base font-semibold text-ink">{prize.name}</h3>
