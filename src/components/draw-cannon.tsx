@@ -337,7 +337,7 @@ export function DrawCannon({ winningPrize, winningNumber, onComplete }: DrawCann
               <img
                 src={winningPrize.imageUrl}
                 alt={winningPrize.name}
-                className="mb-2 h-40 w-64 rounded-xl object-cover ring-2 ring-white/20"
+                className="mb-2 h-56 w-64 rounded-xl object-contain ring-2 ring-white/20"
               />
             ) : (
               <div className="text-6xl md:text-7xl mb-2 drop-shadow-lg">
