@@ -11,7 +11,6 @@ pipeline {
         HOST = "185.227.135.32"
         USER = "sysdev"
         SSH_PORT = "2212"
-        SSH_CREDENTIAL = "deploy-server-staging"
 
         // Firebase Admin (image storage for prizes) — non-secret config
         FIREBASE_PROJECT_ID = "hsm-apps"
@@ -46,7 +45,7 @@ pipeline {
                         env.HOST = "147.93.107.249"
                         env.USER = "root"
                         env.SSH_PORT = "6531"
-                        env.SSH_CREDENTIAL = "deploy-server-production"
+                        env.SSH_CREDENTIAL = "deploy-server-inventory-staging"
                         env.APP_DIR = "/var/www/luckydraw-production"
                         env.APP_NAME = "luckydraw-production"
                         env.PORT = "3039"
@@ -54,6 +53,7 @@ pipeline {
                         env.AUTH_URL = "http://147.93.107.249:3039"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_production?schema=public"
                     } else if (branch == 'uat') {
+                        env.SSH_CREDENTIAL = "deploy-server-staging"
                         env.APP_DIR = "/var/www/luckydraw-uat"
                         env.APP_NAME = "luckydraw-uat"
                         env.PORT = "3029"
@@ -62,6 +62,7 @@ pipeline {
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_uat?schema=public"
                     } else {
                         // Default to dev/staging
+                        env.SSH_CREDENTIAL = "deploy-server-staging"
                         env.APP_DIR = "/var/www/luckydraw"
                         env.APP_NAME = "luckydraw"
                         env.PORT = "3019"
