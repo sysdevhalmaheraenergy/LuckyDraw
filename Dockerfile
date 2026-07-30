@@ -43,4 +43,4 @@ USER nextjs
 
 EXPOSE 3039
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
