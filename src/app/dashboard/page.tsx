@@ -71,11 +71,11 @@ export default async function DashboardPage() {
                 </svg>
               </div>
               <h2 className="mt-3 font-display text-lg font-semibold text-ink">Belum ada event</h2>
-              <p className="mt-1 max-w-sm text-sm text-ink-muted">
+              {/* <p className="mt-1 max-w-sm text-sm text-ink-muted">
                 Event pertamamu bisa dibuat lewat endpoint{" "}
                 <code className="rounded bg-surface/50 px-1.5 py-0.5 text-xs text-brand">POST /api/events</code> di
                 dokumentasi API.
-              </p>
+              </p> */}
             </div>
           ) : (
             <div className="mt-6 sm:mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
