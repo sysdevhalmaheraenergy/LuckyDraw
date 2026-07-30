@@ -9,6 +9,12 @@ RUN npm i --legacy-peer-deps
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# Accept build arguments for environment variables (build-time only)
+ARG DATABASE_URL
+
+# Set environment variables for build time
+ENV DATABASE_URL=$DATABASE_URL
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
