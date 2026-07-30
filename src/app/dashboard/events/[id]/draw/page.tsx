@@ -56,8 +56,32 @@ export default function DrawPage() {
   const [selectedResultId, setSelectedResultId] = useState<string | null>(null);
   const [viewNoteModalOpen, setViewNoteModalOpen] = useState(false);
   const [viewNoteContent, setViewNoteContent] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const { container, item } = getVariants(!!shouldReduceMotion);
+
+  const toggleFullscreen = useCallback(async () => {
+    try {
+      const elem = document.documentElement;
+      if (!document.fullscreenElement) {
+        await elem.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error("Fullscreen request failed:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   const fetchEvent = useCallback(async () => {
     try {
@@ -214,12 +238,30 @@ export default function DrawPage() {
       {/* Header */}
       <DashboardHeader
         rightSlot={
-          <Link
-            href={`/dashboard/events/${id}`}
-            className="cursor-pointer rounded-full border border-border/50 bg-white/20 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:border-brand/40 hover:text-brand hover:bg-white/30"
-          >
-            Detail Event
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleFullscreen}
+              title={isFullscreen ? "Keluar Fullscreen" : "Fullscreen"}
+              className="cursor-pointer rounded-full border border-border/50 bg-white/20 p-2 text-ink transition-all duration-200 hover:border-brand/40 hover:text-brand hover:bg-white/30"
+              aria-label="Toggle fullscreen"
+            >
+              {isFullscreen ? (
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="2">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth="2">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+              )}
+            </button>
+            <Link
+              href={`/dashboard/events/${id}`}
+              className="cursor-pointer rounded-full border border-border/50 bg-white/20 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:border-brand/40 hover:text-brand hover:bg-white/30"
+            >
+              Detail Event
+            </Link>
+          </div>
         }
       />
 
