@@ -21,7 +21,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npx prisma generate
-RUN npx prisma migrate deploy || npx prisma db push
+RUN npx prisma migrate deploy
 RUN npm run build
 
 # Stage 3: Production runner

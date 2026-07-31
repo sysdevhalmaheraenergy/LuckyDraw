@@ -7,9 +7,9 @@ This guide covers deploying the LuckyDraw project via Jenkins CI/CD pipeline.
 
 | Environment | Branch | Server | SSH User | SSH Port | App Port | App URL |
 |------------|--------|--------|----------|----------|----------|---------|
-| **Staging** | `dev` | 185.227.135.32 | sysdev | 2212 | 3019 | http://185.227.135.32:3019 |
-| **UAT** | `uat` | 185.227.135.32 | sysdev | 2212 | 3029 | http://185.227.135.32:3029 |
-| **Production** | `main` | 147.93.107.249 | root | 6531 | 3039 | http://147.93.107.249:3039 |
+| **Staging** | `dev` | 185.227.135.32 | sysdev | 2212 | 3019 | https://luckydraw.limagroup.my.id |
+| **UAT** | `uat` | 185.227.135.32 | sysdev | 2212 | 3029 | https://luckydraw.limagroup.my.id |
+| **Production** | `main` | 147.93.107.249 | root | 6531 | 3039 | https://luckydraw.limagroup.co.id |
 
 ## Prerequisites
 
@@ -94,8 +94,8 @@ The repository URL is: `git@github.com:sysdevhalmaheraenergy/LuckyDraw.git`
 
 | Variable | Dev Value | UAT Value | Prod Value | Description |
 |----------|-----------|-----------|------------|-------------|
-| NEXT_PUBLIC_APP_URL | http://185.227.135.32:3019 | http://185.227.135.32:3029 | http://147.93.107.249:3039 | Frontend URL |
-| AUTH_URL | http://185.227.135.32:3019 | http://185.227.135.32:3029 | http://147.93.107.249:3039 | Auth callback URL |
+| NEXT_PUBLIC_APP_URL | https://luckydraw.limagroup.my.id | https://luckydraw.limagroup.my.id | https://luckydraw.limagroup.co.id | Frontend URL |
+| AUTH_URL | https://luckydraw.limagroup.my.id | https://luckydraw.limagroup.my.id | https://luckydraw.limagroup.co.id | Auth callback URL |
 | JWT_SECRET | (see .env) | (see .env) | (see .env) | JWT signing secret |
 | NEXTAUTH_SECRET | (see .env) | (see .env) | (see .env) | NextAuth secret |
 

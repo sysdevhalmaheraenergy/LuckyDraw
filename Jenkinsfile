@@ -36,8 +36,8 @@ pipeline {
                         env.APP_DIR = "/var/www/luckydraw-production"
                         env.APP_NAME = "luckydraw-production"
                         env.PORT = "3039"
-                        env.NEXT_PUBLIC_APP_URL = "http://147.93.107.249:3039"
-                        env.AUTH_URL = "http://147.93.107.249:3039"
+                        env.NEXT_PUBLIC_APP_URL = "https://luckydraw.limagroup.co.id"
+                        env.AUTH_URL = "https://luckydraw.limagroup.co.id"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_production?schema=public"
                     } else if (branch == 'uat') {
                         env.HOST = "185.227.135.32"
@@ -47,8 +47,8 @@ pipeline {
                         env.APP_DIR = "/var/www/luckydraw-uat"
                         env.APP_NAME = "luckydraw-uat"
                         env.PORT = "3029"
-                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3029"
-                        env.AUTH_URL = "http://185.227.135.32:3029"
+                        env.NEXT_PUBLIC_APP_URL = "https://luckydraw.limagroup.my.id"
+                        env.AUTH_URL = "https://luckydraw.limagroup.my.id"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_uat?schema=public"
                     } else {
                         // Default to dev/staging
@@ -59,8 +59,8 @@ pipeline {
                         env.APP_DIR = "/var/www/luckydraw"
                         env.APP_NAME = "luckydraw"
                         env.PORT = "3019"
-                        env.NEXT_PUBLIC_APP_URL = "http://185.227.135.32:3019"
-                        env.AUTH_URL = "http://185.227.135.32:3019"
+                        env.NEXT_PUBLIC_APP_URL = "https://luckydraw.limagroup.my.id"
+                        env.AUTH_URL = "https://luckydraw.limagroup.my.id"
                         env.DATABASE_URL = "postgresql://baronhcisdocportal:955section3259earlyexperienceidea54well@194.233.93.234:6530/lucky_draw_staging?schema=public"
                     }
                 }
@@ -132,6 +132,10 @@ FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
 DATABASE_URL=${DATABASE_URL}
 NODE_ENV=production
 HOST=0.0.0.0
+SEED_ADMIN_EMAIL=admin@luckydraw.local
+SEED_ADMIN_PASSWORD=admin123
+SEED_SUPERADMIN_EMAIL=
+SEED_SUPERADMIN_PASSWORD=
 EOF
 
 echo "Building and starting Docker container..."
