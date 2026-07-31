@@ -89,7 +89,7 @@ export default async function EventDetailPage({ params, searchParams }: Context)
     },
   });
 
-  if (!event || event.userId !== session.user.id) {
+  if (!event || (event.userId !== session.user.id && session.user.role !== "SUPERADMIN")) {
     notFound();
   }
 

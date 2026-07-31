@@ -1,7 +1,7 @@
 import { z } from "@/lib/zod-openapi";
 
 // ---- Enums ----
-export const roleSchema = z.enum(["ADMIN", "STAFF"]).openapi("Role");
+export const roleSchema = z.enum(["ADMIN", "SUPERADMIN", "STAFF"]).openapi("Role");
 export const eventStatusSchema = z.enum(["DRAFT", "ONGOING", "COMPLETED"]).openapi("EventStatus");
 export const couponStatusSchema = z.enum(["AVAILABLE", "WON", "EXCLUDED"]).openapi("CouponStatus");
 export const prizeStatusSchema = z.enum(["PENDING", "DRAWN"]).openapi("PrizeStatus");
@@ -85,6 +85,15 @@ export const updateEventSchema = z
     status: eventStatusSchema.optional(),
   })
   .openapi("UpdateEventInput");
+
+export const updateUserSchema = z
+  .object({
+    name: z.string().min(1).optional(),
+    email: z.string().email().optional(),
+    role: roleSchema.optional(),
+    password: z.string().min(8).optional(),
+  })
+  .openapi("UpdateUserInput");
 
 export const claimCouponSchema = z
   .object({
@@ -183,6 +192,14 @@ export const userSchema = z
     role: roleSchema,
   })
   .openapi("User");
+
+export const usersListResponseSchema = z
+  .object({
+    users: z.array(
+      userSchema.extend({ createdAt: z.string().datetime() }),
+    ),
+  })
+  .openapi("UsersListResponse");
 
 export const errorResponseSchema = z
   .object({

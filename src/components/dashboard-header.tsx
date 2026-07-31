@@ -41,6 +41,14 @@ export function DashboardHeader({
               Dashboard
             </Link>
           )}
+          {user?.role === "SUPERADMIN" && (
+            <Link
+              href="/dashboard/users"
+              className="cursor-pointer rounded-full border border-border/50 bg-white/20 px-4 py-2 text-sm font-semibold text-ink transition-all duration-200 hover:bg-white/30"
+            >
+              Users
+            </Link>
+          )}
           {rightSlot}
           {showUserInfo && <UserDropdown user={user} />}
         </div>

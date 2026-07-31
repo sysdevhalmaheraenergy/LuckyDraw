@@ -8,6 +8,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = registerSchema.parse(await request.json());
 
+    if (body.role === "SUPERADMIN") {
+      throw new ApiError("Role SUPERADMIN tidak tersedia untuk pendaftaran.", 400);
+    }
+
     const existing = await prisma.user.findUnique({ where: { email: body.email } });
     if (existing) {
       throw new ApiError("Email sudah terdaftar.", 400);

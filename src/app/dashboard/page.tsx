@@ -22,10 +22,15 @@ export default async function DashboardPage() {
     redirect("/login?callbackUrl=/dashboard");
   }
 
+  const isSuperAdmin = session.user.role === "SUPERADMIN";
+
   const events = await prisma.event.findMany({
-    where: { userId: session.user.id },
+    where: isSuperAdmin ? {} : { userId: session.user.id },
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { coupons: true, prizes: true } } },
+    include: {
+      _count: { select: { coupons: true, prizes: true } },
+      user: { select: { name: true, email: true } },
+    },
   });
 
   return (
@@ -93,10 +98,30 @@ export default async function DashboardPage() {
                       {statusLabels[event.status]}
                     </span>
                   </div>
-                  {event.description && (
-                    <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{event.description}</p>
-                  )}
-                  <div className="mt-4 flex items-center gap-4 border-t border-border/50 pt-4 text-xs text-ink-muted">
+                {event.description && (
+                     <p className="mt-2 line-clamp-2 text-sm text-ink-muted">{event.description}</p>
+                   )}
+                   <div className="mt-3 flex items-center gap-2 text-xs text-ink-muted">
+                     <svg viewBox="0 0 24 24" fill="none" className="h-3 w-3 flex-shrink-0" aria-hidden="true">
+                       <path
+                         d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4ZM12 14c-4.41 0-8 2.24-8 5v3h16v-3c0-2.76-3.59-5-8-5Z"
+                         stroke="currentColor"
+                         strokeWidth="1.8"
+                         strokeLinecap="round"
+                         strokeLinejoin="round"
+                       />
+                     </svg>
+                     <span>oleh {event.user?.name ?? event.user?.email ?? "—"}</span>
+                     <span className="opacity-40">•</span>
+                     <time dateTime={event.createdAt.toISOString()}>
+                       {new Date(event.createdAt).toLocaleDateString("id-ID", {
+                         day: "numeric",
+                         month: "short",
+                         year: "numeric",
+                       })}
+                     </time>
+                   </div>
+                   <div className="mt-4 flex items-center gap-4 border-t border-border/50 pt-4 text-xs text-ink-muted">
                     <span>{event._count.coupons} kupon</span>
                     <span>{event._count.prizes} hadiah</span>
                   </div>
