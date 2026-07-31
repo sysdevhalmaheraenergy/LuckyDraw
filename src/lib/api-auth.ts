@@ -9,10 +9,20 @@ export async function requireUser() {
   return session.user;
 }
 
+const ADMIN_ROLES = ["ADMIN", "SUPERADMIN"] as const;
+
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== "ADMIN") {
+  if (!ADMIN_ROLES.includes(user.role as (typeof ADMIN_ROLES)[number])) {
     throw new ApiError("Hanya admin yang boleh melakukan aksi ini.", 403);
+  }
+  return user;
+}
+
+export async function requireSuperAdmin() {
+  const user = await requireUser();
+  if (user.role !== "SUPERADMIN") {
+    throw new ApiError("Hanya superadmin yang boleh melakukan aksi ini.", 403);
   }
   return user;
 }
