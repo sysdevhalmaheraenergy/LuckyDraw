@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { EventFilterBar } from "@/components/event-filter-bar";
+import { UserFilterSelect } from "@/components/user-filter-select";
 
 const statusStyles: Record<string, string> = {
   DRAFT: "bg-ink-muted/10 text-ink-muted",
@@ -16,22 +18,64 @@ const statusLabels: Record<string, string> = {
   COMPLETED: "Selesai",
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; userId?: string }>;
+}) {
   const session = await auth();
   if (!session?.user) {
     redirect("/login?callbackUrl=/dashboard");
   }
 
+  const { status, userId } = await searchParams;
   const isSuperAdmin = session.user.role === "SUPERADMIN";
 
+  const VALID_STATUSES = ["DRAFT", "ONGOING", "COMPLETED"] as const;
+  const statusFilter = VALID_STATUSES.includes(status as (typeof VALID_STATUSES)[number])
+    ? { status: status as (typeof VALID_STATUSES)[number] }
+    : {};
+
+  const users = isSuperAdmin
+    ? await prisma.user.findMany({
+        select: { id: true, name: true, email: true },
+        orderBy: { name: "asc" },
+      })
+    : null;
+
+  const VALID_USER_IDS = new Set(users?.map((u) => u.id) ?? []);
+  const userFilter =
+    isSuperAdmin && userId && VALID_USER_IDS.has(userId) ? { userId } : {};
+
+  const where = isSuperAdmin
+    ? { ...statusFilter, ...userFilter }
+    : { userId: session.user.id, ...statusFilter };
+
   const events = await prisma.event.findMany({
-    where: isSuperAdmin ? {} : { userId: session.user.id },
+    where,
     orderBy: { createdAt: "desc" },
     include: {
       _count: { select: { coupons: true, prizes: true } },
       user: { select: { name: true, email: true } },
     },
   });
+
+  const filterUser =
+    userId && users?.some((u) => u.id === userId)
+      ? users.find((u) => u.id === userId)
+      : undefined;
+
+  const filterSummary = (() => {
+    const parts: string[] = [];
+    if (status) parts.push(statusLabels[status] ?? status);
+    if (filterUser) parts.push(`oleh ${filterUser.name ?? filterUser.email ?? "pengguna"}`);
+    if (parts.length > 0) {
+      return `Menampilkan ${events.length} event (${parts.join(", ")}).`;
+    }
+    return events.length > 0
+      ? `Kamu punya ${events.length} event lucky draw.`
+      : "Belum ada event. Buat lewat API POST /api/events untuk memulai.";
+  })();
 
   return (
     <div className="relative flex flex-1 flex-col">
@@ -42,15 +86,13 @@ export default async function DashboardPage() {
 
       <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto max-w-6xl">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-6">
             <div>
               <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
                 Halo, {(session.user.name ?? session.user.email ?? "").split(" ")[0]}
               </h1>
               <p className="mt-1 text-sm text-ink-muted">
-                {events.length > 0
-                  ? `Kamu punya ${events.length} event lucky draw.`
-                  : "Belum ada event. Buat lewat API POST /api/events untuk memulai."}
+                {filterSummary}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -62,6 +104,15 @@ export default async function DashboardPage() {
               </Link>
             </div>
           </div>
+
+          <EventFilterBar currentStatus={status ?? ""} />
+
+          {isSuperAdmin && users && (
+            <UserFilterSelect
+              users={users}
+              currentUserId={userId ?? ""}
+            />
+          )}
 
           {events.length === 0 ? (
             <div className="mt-8 sm:mt-10 rounded-2xl border border-dashed border-border/50 bg-white/30 p-6 text-center backdrop-blur-xl sm:p-8">
