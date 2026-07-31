@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { BrandMark } from "@/components/brand-mark";
 
-type Role = "ADMIN" | "STAFF";
+type Role = "ADMIN" | "SUPERADMIN" | "STAFF";
 
 const roles: { value: Role; label: string; desc: string }[] = [
   { value: "ADMIN", label: "Admin", desc: "Kelola semua event & hadiah" },
+  { value: "SUPERADMIN", label: "Super Admin", desc: "Akses ke semua akun & user" },
   { value: "STAFF", label: "Staff", desc: "Bantu jalankan undian" },
 ];
 
@@ -204,7 +205,7 @@ export default function RegisterPage() {
             <legend className="text-sm font-medium text-ink">Daftar sebagai</legend>
             <div className="grid grid-cols-2 gap-2 mt-1">
                {roles.map((r) => {
-                 const disabled = r.value === "STAFF";
+                  const disabled = r.value === "STAFF" || r.value === "SUPERADMIN";
                  return (
                    <button
                      key={r.value}
