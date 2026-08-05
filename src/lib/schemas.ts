@@ -90,6 +90,13 @@ export const updateEventSchema = z
       .max(100_000)
       .optional()
       .openapi({ description: "Jumlah kupon tambahan yang akan ditambahkan (hanya saat status DRAFT)." }),
+    removeCoupons: z
+      .number()
+      .int()
+      .min(1)
+      .max(100_000)
+      .optional()
+      .openapi({ description: "Jumlah kupon terakhir yang akan dihapus (hanya saat status DRAFT)." }),
   })
   .openapi("UpdateEventInput");
 

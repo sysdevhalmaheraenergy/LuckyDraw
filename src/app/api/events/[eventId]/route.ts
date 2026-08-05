@@ -52,7 +52,47 @@ export async function PATCH(request: NextRequest, ctx: Context) {
       throw new ApiError("Hanya event draft yang bisa menambah kupon.", 400);
     }
 
+    if (body.removeCoupons !== undefined && existing.status !== "DRAFT") {
+      throw new ApiError("Hanya event draft yang bisa menghapus kupon.", 400);
+    }
+
+    if (body.additionalCoupons !== undefined && body.removeCoupons !== undefined) {
+      throw new ApiError("Tidak bisa menambah dan menghapus kupon sekaligus.", 400);
+    }
+
     let newTotalCoupons: number | undefined;
+
+    if (body.removeCoupons !== undefined) {
+      const toRemove = await prisma.coupon.findMany({
+        where: { eventId, status: { not: "WON" } },
+        orderBy: { number: "desc" },
+        take: body.removeCoupons,
+        select: { id: true, number: true },
+      });
+
+      const actualCount = toRemove.length;
+      if (actualCount < body.removeCoupons) {
+        throw new ApiError(
+          `Hanya ada ${actualCount} kupon yang bisa dihapus, tetapi diminta ${body.removeCoupons}.`,
+          400,
+        );
+      }
+
+      const newTotal = existing.totalCoupons - actualCount;
+
+      await prisma.$transaction([
+        prisma.coupon.deleteMany({
+          where: { id: { in: toRemove.map((c) => c.id) } },
+        }),
+        prisma.event.update({
+          where: { id: eventId },
+          data: { totalCoupons: newTotal },
+        }),
+      ]);
+
+      const event = await prisma.event.findUnique({ where: { id: eventId } });
+      return NextResponse.json({ event });
+    }
 
     if (body.additionalCoupons !== undefined) {
       newTotalCoupons = existing.totalCoupons + body.additionalCoupons;

@@ -13,8 +13,10 @@ import { CouponFilterBar } from "@/components/coupon-filter-bar";
 import { EventEditForm } from "@/components/event-edit-form";
 import { DeleteEventButton } from "@/components/delete-event-button";
 import { AddCouponsForm } from "@/components/add-coupons-form";
+import { RemoveCouponsForm } from "./remove-coupons-form";
 import { CouponExcludeButton } from "./coupon-exclude-button";
 import { CouponRestoreButton } from "./coupon-restore-button";
+import { CouponDeleteButton } from "./coupon-delete-button";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50] as const;
 const DEFAULT_PAGE = 1;
@@ -106,6 +108,7 @@ export default async function EventDetailPage({ params, searchParams }: Context)
   const totalExcluded = counts.EXCLUDED ?? 0;
   const totalWon = counts.WON ?? 0;
   const totalAvailable = counts.AVAILABLE ?? 0;
+  const hasDrawnPrizes = event.prizes.some((p) => p.status === "DRAWN");
 
   return (
     <div className="relative flex min-h-screen flex-1 flex-col">
@@ -211,14 +214,24 @@ export default async function EventDetailPage({ params, searchParams }: Context)
           <section className="mt-8 sm:mt-10">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold text-ink">Hadiah</h2>
-              {event.status === "DRAFT" && (
-                <Link
-                  href={`/dashboard/events/${event.id}/prizes/new`}
-                  className="cursor-pointer rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:scale-105 hover:opacity-90"
-                >
-                  + Tambah Hadiah
-                </Link>
-              )}
+              <div className="flex items-center gap-3">
+                {event.status === "ONGOING" && hasDrawnPrizes && (
+                  <Link
+                    href={`/dashboard/events/${event.id}/draw`}
+                    className="cursor-pointer rounded-full bg-brand/10 px-4 py-2 text-sm font-semibold text-brand transition-all duration-200 hover:scale-105 hover:bg-brand/20"
+                  >
+                    Lihat Hasil Undian
+                  </Link>
+                )}
+                {event.status === "DRAFT" && (
+                  <Link
+                    href={`/dashboard/events/${event.id}/prizes/new`}
+                    className="cursor-pointer rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:scale-105 hover:opacity-90"
+                  >
+                    + Tambah Hadiah
+                  </Link>
+                )}
+              </div>
             </div>
 
             {event.prizes.length === 0 ? (
@@ -308,8 +321,12 @@ export default async function EventDetailPage({ params, searchParams }: Context)
             <CouponFilterBar currentStatus={statusFilter ?? ""} currentSearch={searchParam ?? ""} />
 
             {event.status === "DRAFT" && (
-              <div className="mt-4">
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <AddCouponsForm
+                  eventId={event.id}
+                  currentTotal={event.totalCoupons}
+                />
+                <RemoveCouponsForm
                   eventId={event.id}
                   currentTotal={event.totalCoupons}
                 />
@@ -345,10 +362,16 @@ export default async function EventDetailPage({ params, searchParams }: Context)
                         <td className="px-4 py-3"><StatusBadge status={coupon.status} /></td>
                         <td className="px-4 py-3">
                           {coupon.status === "AVAILABLE" && event.status === "DRAFT" && (
-                            <CouponExcludeButton eventId={event.id} couponNumber={coupon.number} />
+                            <>
+                              <CouponExcludeButton eventId={event.id} couponNumber={coupon.number} />
+                              <CouponDeleteButton eventId={event.id} couponNumber={coupon.number} />
+                            </>
                           )}
                           {coupon.status === "EXCLUDED" && event.status === "DRAFT" && (
-                            <CouponRestoreButton eventId={event.id} couponNumber={coupon.number} />
+                            <>
+                              <CouponRestoreButton eventId={event.id} couponNumber={coupon.number} />
+                              <CouponDeleteButton eventId={event.id} couponNumber={coupon.number} />
+                            </>
                           )}
                         </td>
                       </tr>
