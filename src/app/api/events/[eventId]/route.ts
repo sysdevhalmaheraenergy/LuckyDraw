@@ -48,6 +48,51 @@ export async function PATCH(request: NextRequest, ctx: Context) {
       throw new ApiError("Event tidak ditemukan.", 404);
     }
 
+    if (body.additionalCoupons !== undefined && existing.status !== "DRAFT") {
+      throw new ApiError("Hanya event draft yang bisa menambah kupon.", 400);
+    }
+
+    let newTotalCoupons: number | undefined;
+
+    if (body.additionalCoupons !== undefined) {
+      newTotalCoupons = existing.totalCoupons + body.additionalCoupons;
+
+      const maxCoupon = await prisma.coupon.findFirst({
+        where: { eventId },
+        orderBy: { number: "desc" },
+        select: { number: true },
+      });
+
+      const startNumber = (maxCoupon?.number ?? 0) + 1;
+      const batchSize = 100;
+
+      const couponData = Array.from(
+        { length: body.additionalCoupons },
+        (_, j) => ({ eventId, number: startNumber + j }),
+      );
+
+      await prisma.$transaction(async (tx) => {
+        for (let i = 0; i < couponData.length; i += batchSize) {
+          await tx.coupon.createMany({
+            data: couponData.slice(i, i + batchSize),
+          });
+        }
+
+        await tx.event.update({
+          where: { id: eventId },
+          data: {
+            name: body.name,
+            description: body.description,
+            status: body.status,
+            totalCoupons: newTotalCoupons,
+          },
+        });
+      });
+
+      const event = await prisma.event.findUnique({ where: { id: eventId } });
+      return NextResponse.json({ event });
+    }
+
     const event = await prisma.event.update({
       where: { id: eventId },
       data: {

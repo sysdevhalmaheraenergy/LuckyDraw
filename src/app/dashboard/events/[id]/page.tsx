@@ -10,6 +10,9 @@ import { EventStatusToggle } from "@/components/event-status-toggle";
 import { PrizeActions } from "@/components/prize-actions";
 import { Pagination } from "@/components/pagination";
 import { CouponFilterBar } from "@/components/coupon-filter-bar";
+import { EventEditForm } from "@/components/event-edit-form";
+import { DeleteEventButton } from "@/components/delete-event-button";
+import { AddCouponsForm } from "@/components/add-coupons-form";
 import { CouponExcludeButton } from "./coupon-exclude-button";
 import { CouponRestoreButton } from "./coupon-restore-button";
 
@@ -136,11 +139,23 @@ export default async function EventDetailPage({ params, searchParams }: Context)
                 <p className="mt-1 text-sm text-ink-muted">{event.description}</p>
               )}
             </div>
-            <EventStatusToggle
-              eventId={event.id}
-              currentStatus={event.status}
-              hasPrizes={event.prizes.length > 0}
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              {event.status === "DRAFT" && (
+                <>
+                  <EventEditForm
+                    eventId={event.id}
+                    initialName={event.name}
+                    initialDescription={event.description}
+                  />
+                  <DeleteEventButton eventId={event.id} eventName={event.name} />
+                </>
+              )}
+              <EventStatusToggle
+                eventId={event.id}
+                currentStatus={event.status}
+                hasPrizes={event.prizes.length > 0}
+              />
+            </div>
           </div>
 
           {/* Stats */}
@@ -291,6 +306,15 @@ export default async function EventDetailPage({ params, searchParams }: Context)
             </p>
 
             <CouponFilterBar currentStatus={statusFilter ?? ""} currentSearch={searchParam ?? ""} />
+
+            {event.status === "DRAFT" && (
+              <div className="mt-4">
+                <AddCouponsForm
+                  eventId={event.id}
+                  currentTotal={event.totalCoupons}
+                />
+              </div>
+            )}
 
             {event.coupons.length === 0 ? (
               <div className="mt-4 rounded-2xl border-2 border-dashed border-border/50 bg-surface/50 p-8 text-center shadow-card backdrop-blur-xl sm:p-12">
