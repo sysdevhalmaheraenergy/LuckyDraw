@@ -139,7 +139,7 @@ registry.registerPath({
   method: "patch",
   path: "/api/events/{eventId}",
   tags: ["Events"],
-  summary: "Update nama/deskripsi/status event",
+  summary: "Update nama/deskripsi/status event + tambah kupon (hanya DRAFT)",
   security,
   request: {
     params: z.object({ eventId: z.string() }),
