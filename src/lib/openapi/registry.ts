@@ -139,7 +139,7 @@ registry.registerPath({
   method: "patch",
   path: "/api/events/{eventId}",
   tags: ["Events"],
-  summary: "Update nama/deskripsi/status event",
+  summary: "Update nama/deskripsi/status event, tambah kupon, atau hapus kupon (hanya DRAFT)",
   security,
   request: {
     params: z.object({ eventId: z.string() }),
@@ -334,6 +334,22 @@ registry.registerPath({
   responses: {
     200: { description: "Kupon berhasil dipulihkan.", ...jsonContent(z.object({ coupon: couponSchema })) },
     400: badRequest,
+    401: unauthorized,
+    403: forbidden,
+    404: notFound,
+  },
+});
+
+registry.registerPath({
+  method: "delete",
+  path: "/api/events/{eventId}/coupons/{number}",
+  tags: ["Coupons"],
+  summary: "Hapus kupon secara permanen (hanya untuk event draft, kupon AVAILABLE atau EXCLUDED)",
+  security,
+  request: { params: z.object({ eventId: z.string(), number: z.string() }) },
+  responses: {
+    200: { description: "Kupon berhasil dihapus.", ...jsonContent(okResponseSchema) },
+    400: { description: "Event tidak draft, kupon sudah menang, atau input tidak valid.", ...jsonContent(errorResponseSchema) },
     401: unauthorized,
     403: forbidden,
     404: notFound,
